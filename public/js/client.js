@@ -4,6 +4,12 @@
  * UPDATED: Responsive Handlers & Enterprise Wording
  */
 
+/**
+ * client.js
+ * Modul Manajemen Klien
+ * [MAINTENANCE] Modul ini menangani operasi CRUD untuk entitas klien dan lisensi.
+ * Saat status klien diubah menjadi 'Inactive', maka otomatis lisensinya tidak akan dihitung di Dashboard Finance.
+ */
 let allClients = [];
 
 document.addEventListener('DOMContentLoaded', () => {

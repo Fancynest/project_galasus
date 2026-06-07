@@ -118,6 +118,9 @@ type LoginRequest struct {
 }
 
 func main() {
+	// [MAINTENANCE] Konfigurasi koneksi ke SQL Server.
+	// Jika berpindah ke VPS atau Production, ubah DSN ini dan pastikan port 1433 terbuka.
+	// Jika menggunakan MariaDB, ganti driver ke gorm.io/driver/mysql.
 	dsn := "sqlserver://sa:heliocaesar@localhost:1433?database=Galasusdb"
 	db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -143,10 +146,15 @@ func main() {
 	e.Static("/assets", "assets")
 	e.Static("/views", "views")
 
+	// [SECURITY] Konfigurasi JWT (JSON Web Token)
+	// Pastikan 'SigningKey' ini diubah menjadi environment variable di server production.
 	jwtConfig := echojwt.Config{
 		SigningKey: []byte("RAHASIA_DAPUR_GALASUS_2026"),
 	}
 
+	// [MIDDLEWARE] Satpam Middleware
+	// Fungsi ini mengecek apakah token JWT valid, user masih ada di DB, dan akunnya tidak di-suspend.
+	// Wajib dipasang di semua route yang membutuhkan login.
 	satpamMiddleware := func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			userToken, ok := c.Get("user").(*jwt.Token)
@@ -237,6 +245,9 @@ func main() {
 		return c.JSON(200, map[string]string{"message": "OK"})
 	}, echojwt.WithConfig(jwtConfig), satpamMiddleware)
 
+	// ==========================================
+	// GROUP: ADMIN SISTEM & MANAJEMEN PENGGUNA
+	// ==========================================
 	adminGroup := e.Group("", echojwt.WithConfig(jwtConfig), satpamMiddleware)
 	adminGroup.GET("/users", func(c echo.Context) error {
 		var users []User
@@ -345,6 +356,9 @@ func main() {
 		return c.JSON(200, "Dihapus")
 	})
 
+	// ==========================================
+	// GROUP: MODUL KEUANGAN (FINANCE)
+	// ==========================================
 	financeGroup := e.Group("", echojwt.WithConfig(jwtConfig), satpamMiddleware)
 	financeGroup.GET("/transactions", func(c echo.Context) error {
 		rangeParam := c.QueryParam("range")
@@ -456,6 +470,9 @@ func main() {
 	})
 
 
+	// ==========================================
+	// GROUP: LAYANAN BANTUAN (SERVICE DESK)
+	// ==========================================
 	ticketGroup := e.Group("", echojwt.WithConfig(jwtConfig), satpamMiddleware)
 	ticketGroup.GET("/tickets", func(c echo.Context) error {
 		userToken := c.Get("user").(*jwt.Token)
@@ -749,6 +766,9 @@ func main() {
 		return c.JSON(200, map[string]string{"message": "Tiket berhasil dihapus dan kuota layanan dikembalikan"})
 	})
 
+	// ==========================================
+	// GROUP: MANAJEMEN KLIEN (CLIENT MANAGEMENT)
+	// ==========================================
 	clientGroup := e.Group("/clients", echojwt.WithConfig(jwtConfig), satpamMiddleware)
 	clientGroup.GET("", func(c echo.Context) error {
 		var clients []Client

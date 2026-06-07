@@ -4,6 +4,12 @@
  * FIX: UI Responsif Handlers, Retensi Logika Klien & Penghapusan Tiket.
  */
 
+/**
+ * servicedesk.js
+ * [MAINTENANCE] Modul Sistem Tiket Layanan (ITSM).
+ * State/Status Tiket: 'Open' -> 'In Progress' -> 'Solved' -> 'Closed' (diarsipkan).
+ * Fungsi updateStatus menangani perpindahan status ini serta pencatatan log resolusi.
+ */
 let allTickets = [];
 
 async function loadInitialData() {
