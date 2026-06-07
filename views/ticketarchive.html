@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Galasus | Arsip Tiket Selesai</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: { "galasus-blue": "#0274BE" }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(226, 232, 240, 0.5);
+      box-shadow: 0px 4px 20px rgba(15, 23, 42, 0.05);
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
+  </style>
+
+    <link rel="icon" type="image/svg+xml" href="/public/photos/Logo-Galasus178x40.svg">
+</head>
+
+<body class="bg-slate-50 text-slate-800 min-h-screen flex overflow-hidden">
+
+  <aside class="fixed inset-y-0 left-0 w-64 bg-white/80 backdrop-blur-xl border-r border-slate-200/50 flex flex-col p-4 gap-2 z-50">
+    <div class="px-2 py-4 mb-4 flex items-center justify-center border-b border-slate-100">
+      <img src="/public/photos/Logo-Galasus178x40.svg" alt="Logo Galasus" class="w-full max-w-[150px] object-contain" />
+    </div>
+    <nav class="flex flex-col gap-1 flex-1">
+      <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 transition-colors rounded-lg font-medium" href="/views/superadmin.html">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Dasbor</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 transition-colors rounded-lg font-medium" href="/views/clientmanagement.html">
+        <span class="material-symbols-outlined">groups</span>
+        <span>Manajemen Klien</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 transition-colors rounded-lg font-medium" href="/views/servicedesk.html">
+        <span class="material-symbols-outlined">support_agent</span>
+        <span>Layanan Bantuan</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 transition-colors rounded-lg font-medium" href="/views/financemng.html">
+        <span class="material-symbols-outlined">account_balance_wallet</span>
+        <span>Keuangan</span>
+      </a>
+    </nav>
+    <div class="mt-auto pt-4 border-t border-slate-200/50">
+        <a id="btn-logout" class="flex items-center gap-3 px-3 py-2.5 text-red-600 hover:bg-red-50 transition-colors rounded-lg font-medium cursor-pointer">
+            <span class="material-symbols-outlined">logout</span>
+            <span>Keluar</span>
+        </a>
+    </div>
+  </aside>
+
+  <main class="flex-1 ml-64 flex flex-col h-screen">
+    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-sm px-8 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <a href="/views/servicedesk.html" class="p-2 hover:bg-slate-100 rounded-full transition-colors flex items-center justify-center">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <h2 class="font-bold text-slate-800">Kembali ke Kendali Insiden</h2>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
+        <div class="flex items-center gap-3">
+          <div class="text-right hidden md:block">
+            <p class="text-xs font-bold text-slate-800" id="user-name">Memuat...</p>
+            <p class="text-[10px] text-slate-500 uppercase tracking-wider font-semibold" id="user-role">Memuat...</p>
+          </div>
+          <div class="w-9 h-9 rounded-full bg-galasus-blue/10 flex items-center justify-center border border-galasus-blue/20">
+            <span class="text-galasus-blue font-bold text-sm" id="user-initials">??</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex-1 p-8 overflow-y-auto custom-scrollbar">
+      <div class="max-w-[1600px] mx-auto space-y-6">
+        
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900">Arsip Laporan Selesai</h1>
+                <p class="text-slate-500 text-sm">Data historis semua tiket yang telah ditutup oleh sistem.</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="exportToExcel()" class="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-bold shadow-md hover:bg-emerald-700 transition-all">
+                    <span class="material-symbols-outlined text-sm">description</span> Export Excel
+                </button>
+            </div>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+            <div>
+                <label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Cari Keyword</label>
+                <input id="search-archive" type="text" class="w-full bg-white border-slate-200 rounded-xl text-sm px-4 py-2.5 outline-none focus:ring-2 focus:ring-galasus-blue/20" placeholder="ID Tiket / Klien / Masalah...">
+            </div>
+            <div>
+                <label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Periode Selesai</label>
+                <input id="filter-date" type="date" class="w-full bg-white border-slate-200 rounded-xl text-sm px-4 py-2.5 outline-none focus:ring-2 focus:ring-galasus-blue/20">
+            </div>
+            <div class="flex justify-end">
+                <button onclick="resetFilters()" class="px-6 py-2.5 text-xs font-bold text-slate-500 hover:text-galasus-blue transition-colors uppercase tracking-widest">Reset Filter</button>
+            </div>
+        </div>
+
+        <div class="glass-card rounded-2xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead class="bg-slate-50 border-b border-slate-200">
+                <tr class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  <th class="px-6 py-4">ID Tiket</th>
+                  <th class="px-6 py-4">Klien & Detail Masalah</th>
+                  <th class="px-6 py-4 text-center">Tgl Selesai</th>
+                  <th class="px-6 py-4 text-center">Status Akhir</th>
+                  <th class="px-6 py-4 text-right">Opsi</th>
+                </tr>
+              </thead>
+              <tbody id="archive-table-body" class="divide-y divide-slate-100 bg-white/30">
+                </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script src="/public/js/dialog.js"></script>
+  <script src="/public/js/auth.js"></script>
+  <script src="/public/js/ticketarchive.js?v=3"></script>
+</body>
+</html>

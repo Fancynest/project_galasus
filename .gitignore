@@ -1,0 +1,19 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binaries, profiling data, etc.
+*.test
+*.out
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# OS specific files
+.DS_Store
+Thumbs.db
