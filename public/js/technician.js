@@ -257,6 +257,11 @@ function finishTicket(dbId, noTiket, pelanggan) {
         document.getElementById('input-tindakan').disabled = false;
         document.getElementById('input-inventaris').disabled = false;
         
+        const labelBefore = document.querySelector('label[for="upload-before"]');
+        if(labelBefore) labelBefore.classList.remove('pointer-events-none', 'opacity-50', 'bg-slate-50');
+        const labelAfter = document.querySelector('label[for="upload-after"]');
+        if(labelAfter) labelAfter.classList.remove('pointer-events-none', 'opacity-50', 'bg-slate-50');
+        
         const pb = document.getElementById('preview-before');
         const pa = document.getElementById('preview-after');
         if(pb) { pb.classList.add('hidden'); pb.querySelector('img').src = ''; pb.querySelector('button').classList.remove('hidden'); }
@@ -304,6 +309,11 @@ function viewCompletedTicket(dbId, noTiket, pelanggan) {
         
         document.getElementById('input-inventaris').value = ticket.inventaris || '';
         document.getElementById('input-inventaris').disabled = true;
+        
+        const labelBefore = document.querySelector('label[for="upload-before"]');
+        if(labelBefore) labelBefore.classList.add('pointer-events-none', 'opacity-50', 'bg-slate-50');
+        const labelAfter = document.querySelector('label[for="upload-after"]');
+        if(labelAfter) labelAfter.classList.add('pointer-events-none', 'opacity-50', 'bg-slate-50');
         
         const pb = document.getElementById('preview-before');
         const pa = document.getElementById('preview-after');
