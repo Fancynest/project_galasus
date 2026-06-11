@@ -690,6 +690,19 @@ window.openTransactionForm = function(type) {
         }
     }
     
+    // Populate Datalist Klien
+    const dataList = document.getElementById('client-list');
+    if (dataList && allClients && allClients.length > 0) {
+        dataList.innerHTML = '';
+        allClients.forEach(c => {
+            if ((c.status || '').toLowerCase() === 'active') {
+                const opt = document.createElement('option');
+                opt.value = c.name || c.company_name;
+                dataList.appendChild(opt);
+            }
+        });
+    }
+
     openModalCustom('modal-transaction-form');
 };
 

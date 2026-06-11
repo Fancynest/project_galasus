@@ -382,9 +382,10 @@
         <input type="hidden" id="field-type">
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">Identitas Klien / Mitra Bisnis</label>
-          <input id="field-name" type="text"
+          <input id="field-name" type="text" list="client-list"
             class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200"
             placeholder="Contoh: PT. Inovasi Teknologi" required>
+          <datalist id="client-list"></datalist>
         </div>
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">Uraian / Deskripsi Layanan</label>
