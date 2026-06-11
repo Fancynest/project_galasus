@@ -976,12 +976,8 @@ func main() {
 			if input.TicketQuota > 0 {
 				client.TicketQuota = input.TicketQuota
 			}
-			if input.AddOnServices != "" {
-				client.AddOnServices = input.AddOnServices
-			}
-			if input.Assets != "" {
-				client.Assets = input.Assets
-			}
+			client.AddOnServices = input.AddOnServices
+			client.Assets = input.Assets
 			if input.ContractEnd != "" && input.ContractEnd != "T00:00:00Z" {
 				if parsedTime, err := time.Parse(time.RFC3339, input.ContractEnd); err == nil {
 					client.ContractEnd = parsedTime
