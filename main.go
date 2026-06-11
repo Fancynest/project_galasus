@@ -391,6 +391,9 @@ func main() {
 		userToken := c.Get("user").(*jwt.Token)
 		claims := userToken.Claims.(jwt.MapClaims)
 		currentUserIDStr := fmt.Sprintf("%.0f", claims["user_id"].(float64))
+		currentUserID := int(claims["user_id"].(float64))
+		currentUserName := claims["name"].(string)
+		currentRole := claims["role"].(string)
 
 		var user User
 		if err := db.First(&user, id).Error; err != nil {
@@ -421,6 +424,7 @@ func main() {
 			}
 		}
 		db.Save(&user)
+		logSystemActivity(currentUserID, currentUserName, currentRole, "User Management", "Update User", fmt.Sprintf("Memperbarui detail profil pengguna: %s", user.Email))
 		return c.JSON(200, user)
 	})
 
@@ -451,6 +455,12 @@ func main() {
 
 	adminGroup.PUT("/users/:id/reset-password", func(c echo.Context) error {
 		id := c.Param("id")
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		currentUserID := int(claims["user_id"].(float64))
+		currentUserName := claims["name"].(string)
+		currentRole := claims["role"].(string)
+
 		hashedBytes, _ := bcrypt.GenerateFromPassword([]byte("Galasus123!"), bcrypt.DefaultCost)
 		if err := db.Model(&User{}).Where("user_id = ?", id).Updates(map[string]interface{}{
 			"password":       string(hashedBytes),
@@ -458,6 +468,7 @@ func main() {
 		}).Error; err != nil {
 			return c.JSON(500, map[string]string{"message": "Gagal mengatur ulang kata sandi"})
 		}
+		logSystemActivity(currentUserID, currentUserName, currentRole, "User Management", "Reset Password", fmt.Sprintf("Mengembalikan sandi ke standar untuk User ID: %s", id))
 		return c.JSON(200, map[string]string{"message": "Kata sandi berhasil dikembalikan ke standar sistem (Galasus123!)"})
 	})
 
@@ -466,11 +477,15 @@ func main() {
 		userToken := c.Get("user").(*jwt.Token)
 		claims := userToken.Claims.(jwt.MapClaims)
 		currentUserIDStr := fmt.Sprintf("%.0f", claims["user_id"].(float64))
+		currentUserID := int(claims["user_id"].(float64))
+		currentUserName := claims["name"].(string)
+		currentRole := claims["role"].(string)
 
 		if id == currentUserIDStr {
 			return c.JSON(403, map[string]string{"message": "Operasi Ditolak: Anda tidak dapat menghapus akun Anda sendiri."})
 		}
 		db.Delete(&User{}, id)
+		logSystemActivity(currentUserID, currentUserName, currentRole, "User Management", "Delete User", fmt.Sprintf("Menghapus akun pengguna dari sistem dengan ID: %s", id))
 		return c.JSON(200, "Dihapus")
 	})
 
@@ -539,6 +554,14 @@ func main() {
 			trans.Status = input.Status
 		}
 		db.Save(&trans)
+
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		currentUserID := int(claims["user_id"].(float64))
+		currentUserName := claims["name"].(string)
+		currentRole := claims["role"].(string)
+		logSystemActivity(currentUserID, currentUserName, currentRole, "Finance", "Update Transaction", fmt.Sprintf("Memperbarui status transaksi %s menjadi %s", trans.InvoiceNo, trans.Status))
+
 		return c.JSON(200, trans)
 	})
 	financeGroup.GET("/projections", func(c echo.Context) error {
@@ -554,6 +577,14 @@ func main() {
 		if err := db.Create(&req).Error; err != nil {
 			return c.JSON(500, map[string]string{"message": "Gagal menyimpan ke basis data"})
 		}
+
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		currentUserID := int(claims["user_id"].(float64))
+		currentUserName := claims["name"].(string)
+		currentRole := claims["role"].(string)
+		logSystemActivity(currentUserID, currentUserName, currentRole, "Finance", "Create Projection", fmt.Sprintf("Membuat proyeksi anggaran: %s", req.Title))
+
 		return c.JSON(201, req)
 	})
 	financeGroup.POST("/projections/:id/execute", func(c echo.Context) error {
@@ -576,6 +607,14 @@ func main() {
 			return c.JSON(500, map[string]string{"message": "Gagal mencatat transaksi eksekusi"})
 		}
 		db.Delete(&p)
+
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		currentUserID := int(claims["user_id"].(float64))
+		currentUserName := claims["name"].(string)
+		currentRole := claims["role"].(string)
+		logSystemActivity(currentUserID, currentUserName, currentRole, "Finance", "Execute Projection", fmt.Sprintf("Mengeksekusi proyeksi anggaran: %s menjadi pengeluaran", p.Title))
+
 		return c.JSON(200, map[string]string{"message": "Proyeksi berhasil dieksekusi menjadi pengeluaran"})
 	})
 	financeGroup.PUT("/projections/:id", func(c echo.Context) error {
@@ -589,6 +628,14 @@ func main() {
 			return c.JSON(400, map[string]string{"message": "Format data tidak valid"})
 		}
 		db.Model(&p).Updates(Projection{Title: req.Title, Amount: req.Amount, DueDate: req.DueDate})
+
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		currentUserID := int(claims["user_id"].(float64))
+		currentUserName := claims["name"].(string)
+		currentRole := claims["role"].(string)
+		logSystemActivity(currentUserID, currentUserName, currentRole, "Finance", "Update Projection", fmt.Sprintf("Memperbarui proyeksi anggaran: %s", req.Title))
+
 		return c.JSON(200, map[string]string{"message": "Proyeksi berhasil diperbarui"})
 	})
 	financeGroup.DELETE("/projections/:id", func(c echo.Context) error {
@@ -596,6 +643,14 @@ func main() {
 		if err := db.Delete(&Projection{}, id).Error; err != nil {
 			return c.JSON(500, map[string]string{"message": "Gagal menghapus proyeksi"})
 		}
+
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		currentUserID := int(claims["user_id"].(float64))
+		currentUserName := claims["name"].(string)
+		currentRole := claims["role"].(string)
+		logSystemActivity(currentUserID, currentUserName, currentRole, "Finance", "Delete Projection", fmt.Sprintf("Menghapus proyeksi anggaran dengan ID: %s", id))
+
 		return c.JSON(200, map[string]string{"message": "Proyeksi berhasil dihapus"})
 	})
 
@@ -680,6 +735,8 @@ func main() {
 			return c.JSON(500, map[string]string{"message": "Gagal mengalokasikan tiket"})
 		}
 
+		logSystemActivity(teknisiID, teknisiName, claims["role"].(string), "Service Desk", "Take Ticket", fmt.Sprintf("Teknisi mengambil alih tiket ID: %s", ticket.NoTiket))
+
 		db.Create(&TicketLog{
 			TicketID:    ticket.ID,
 			UserID:      teknisiID,
@@ -732,6 +789,8 @@ func main() {
 			return c.JSON(500, map[string]string{"message": "Gagal menyimpan log"})
 		}
 
+		logSystemActivity(userID, userName, claims["role"].(string), "Service Desk", "Update Progress", fmt.Sprintf("Menambahkan catatan log pada tiket: %s", ticket.NoTiket))
+
 		// Create Notification for the assigned technician if the commenter is NOT the assigned technician
 		if ticket.TeknisiID != 0 && ticket.TeknisiID != userID {
 			notif := Notification{
@@ -777,6 +836,8 @@ func main() {
 			ticket.Status = "on-progress"
 		}
 		db.Save(&ticket)
+
+		logSystemActivity(currentUserID, currentUserName, claims["role"].(string), "Service Desk", "Assign Ticket", fmt.Sprintf("Mendelegasikan tiket %s kepada %s", ticket.NoTiket, targetUser.FullName))
 
 		logEntry := TicketLog{
 			TicketID:    ticket.ID,
@@ -833,6 +894,8 @@ func main() {
 		}
 		db.Save(&ticket)
 
+		logSystemActivity(currentUserID, currentUserName, claims["role"].(string), "Service Desk", "Extend SLA", fmt.Sprintf("Memperpanjang SLA tiket %s sebesar %d Jam", ticket.NoTiket, input.Hours))
+
 		logEntry := TicketLog{
 			TicketID:    ticket.ID,
 			UserID:      currentUserID,
@@ -882,6 +945,14 @@ func main() {
 		if err := db.Model(&ticket).Updates(updates).Error; err != nil {
 			return c.JSON(500, map[string]string{"message": "Gagal memperbarui basis data: " + err.Error()})
 		}
+
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		currentUserID := int(claims["user_id"].(float64))
+		currentUserName := claims["name"].(string)
+		currentRole := claims["role"].(string)
+		logSystemActivity(currentUserID, currentUserName, currentRole, "Service Desk", "Close Ticket", fmt.Sprintf("Mengunggah BAP dan menutup tiket: %s", ticket.NoTiket))
+
 		return c.JSON(200, map[string]string{"message": "Laporan berhasil diunggah dan tiket ditutup"})
 	})
 
@@ -910,6 +981,14 @@ func main() {
 		}
 
 		db.Delete(&ticket)
+
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		currentUserID := int(claims["user_id"].(float64))
+		currentUserName := claims["name"].(string)
+		currentRole := claims["role"].(string)
+		logSystemActivity(currentUserID, currentUserName, currentRole, "Service Desk", "Delete Ticket", fmt.Sprintf("Menghapus tiket dengan ID: %s", id))
+
 		return c.JSON(200, map[string]string{"message": "Tiket berhasil dihapus dan kuota layanan dikembalikan"})
 	})
 
@@ -985,6 +1064,14 @@ func main() {
 			}
 		}
 		db.Save(&client)
+
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		currentUserID := int(claims["user_id"].(float64))
+		currentUserName := claims["name"].(string)
+		currentRole := claims["role"].(string)
+		logSystemActivity(currentUserID, currentUserName, currentRole, "Client Management", "Update Client", fmt.Sprintf("Memperbarui profil klien: %s", client.Name))
+
 		return c.JSON(200, map[string]string{"message": "Data Klien berhasil diperbarui!"})
 	})
 
@@ -996,6 +1083,14 @@ func main() {
 		}
 		client.Status = "inactive"
 		db.Save(&client)
+
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		currentUserID := int(claims["user_id"].(float64))
+		currentUserName := claims["name"].(string)
+		currentRole := claims["role"].(string)
+		logSystemActivity(currentUserID, currentUserName, currentRole, "Client Management", "Deactivate Client", fmt.Sprintf("Menonaktifkan status klien: %s", client.Name))
+
 		return c.JSON(200, map[string]string{"message": "Status klien berhasil ditangguhkan"})
 	})
 
@@ -1007,6 +1102,14 @@ func main() {
 		}
 		client.Status = "active"
 		db.Save(&client)
+
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		currentUserID := int(claims["user_id"].(float64))
+		currentUserName := claims["name"].(string)
+		currentRole := claims["role"].(string)
+		logSystemActivity(currentUserID, currentUserName, currentRole, "Client Management", "Activate Client", fmt.Sprintf("Mengaktifkan kembali status klien: %s", client.Name))
+
 		return c.JSON(200, map[string]string{"message": "Klien berhasil diaktifkan kembali"})
 	})
 
