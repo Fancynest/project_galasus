@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         // Memanggil API Aggregator Utama
-        const response = await fetch('http://127.0.0.1:8081/api/dashboard', {
+        const response = await fetch('/api/dashboard', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 3. Fetch Audit Logs (CCTV)
     try {
-        const resAudit = await fetch('http://127.0.0.1:8081/audit-logs', {
+        const resAudit = await fetch('/audit-logs', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (resAudit.ok) {
@@ -206,7 +206,7 @@ async function downloadCCTVLogs() {
     btn.disabled = true;
 
     try {
-        const url = `http://127.0.0.1:8081/audit-logs?start_date=${dates.start}&end_date=${dates.end}`;
+        const url = `/audit-logs?start_date=${dates.start}&end_date=${dates.end}`;
         const res = await fetch(url, {
             headers: { 'Authorization': `Bearer ${token}` }
         });

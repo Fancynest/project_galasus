@@ -54,7 +54,7 @@ function setupMobileSidebar() {
 async function loadClientsForDropdown() {
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch('http://127.0.0.1:8081/clients', { 
+        const res = await fetch('/clients', { 
             headers: { 'Authorization': `Bearer ${token}` } 
         });
         if(!res.ok) throw new Error("Akses data klien ditolak peladen.");
@@ -92,7 +92,7 @@ window.toggleManualClient = function() {
 async function loadTickets() {
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch('http://127.0.0.1:8081/tickets', {
+        const res = await fetch('/tickets', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if(!res.ok) throw new Error("Akses daftar tiket ditolak.");
@@ -226,7 +226,7 @@ async function handleCreateTicket(e) {
     }
 
     try {
-        const res = await fetch('http://127.0.0.1:8081/tickets', {
+        const res = await fetch('/tickets', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
@@ -253,7 +253,7 @@ window.deleteTicket = async function(id) {
     
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch(`http://127.0.0.1:8081/tickets/${id}`, {
+        const res = await fetch(`/tickets/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -360,7 +360,7 @@ async function openDetailTiket(id) {
     // Fetch logs
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch(`http://127.0.0.1:8081/tickets/${id}/logs`, {
+        const res = await fetch(`/tickets/${id}/logs`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const logs = await res.json();
@@ -396,7 +396,7 @@ async function openDetailTiket(id) {
 async function promptHandoff() {
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch('http://127.0.0.1:8081/technicians', {
+        const res = await fetch('/technicians', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const techs = await res.json();
@@ -414,7 +414,7 @@ async function promptHandoff() {
         let selectedId = await GalasusDialog.promptSelect("Pilih Teknisi Tujuan untuk melanjutkan delegasi:", options);
         
         if (selectedId) {
-            const assignRes = await fetch(`http://127.0.0.1:8081/tickets/${currentTicketId}/assign`, {
+            const assignRes = await fetch(`/tickets/${currentTicketId}/assign`, {
                 method: 'PUT',
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ target_user_id: parseInt(selectedId) })
@@ -453,7 +453,7 @@ async function promptExtendSLA() {
     if (selectedHours) {
         const token = localStorage.getItem('galasus_token');
         try {
-            const res = await fetch(`http://127.0.0.1:8081/tickets/${currentTicketId}/extend-sla`, {
+            const res = await fetch(`/tickets/${currentTicketId}/extend-sla`, {
                 method: 'PUT',
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ hours: parseInt(selectedHours) })
@@ -481,7 +481,7 @@ async function handleAddLog(e) {
     const desc = document.getElementById('input-log-desc').value;
 
     try {
-        const res = await fetch(`http://127.0.0.1:8081/tickets/${currentTicketId}/logs`, {
+        const res = await fetch(`/tickets/${currentTicketId}/logs`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ description: desc })

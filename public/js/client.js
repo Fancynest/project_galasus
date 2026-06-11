@@ -94,7 +94,7 @@ function setupMobileSidebar() {
 async function loadClients() {
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch('http://127.0.0.1:8081/clients', {
+        const res = await fetch('/clients', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -124,7 +124,7 @@ async function handleAddClient(e) {
     };
 
     try {
-        const res = await fetch('http://127.0.0.1:8081/clients', {
+        const res = await fetch('/clients', {
             method: 'POST',
             headers: { 
                 'Authorization': `Bearer ${token}`,
@@ -164,7 +164,7 @@ async function handleEditClient(e) {
     };
 
     try {
-        const res = await fetch(`http://127.0.0.1:8081/clients/${id}`, {
+        const res = await fetch(`/clients/${id}`, {
             method: 'PUT',
             headers: { 
                 'Authorization': `Bearer ${token}`,
@@ -409,7 +409,7 @@ window.deactivateClient = async function(id) {
     
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch(`http://127.0.0.1:8081/clients/${id}/deactivate`, {
+        const res = await fetch(`/clients/${id}/deactivate`, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -429,7 +429,7 @@ window.activateClient = async function(id) {
     
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch(`http://127.0.0.1:8081/clients/${id}/activate`, {
+        const res = await fetch(`/clients/${id}/activate`, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -479,7 +479,7 @@ window.closeReportModal = function() {
 async function generateMonthlyPDF(clientId, month, year) {
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch(`http://127.0.0.1:8081/clients/${clientId}/report?month=${month}&year=${year}`, {
+        const res = await fetch(`/clients/${clientId}/report?month=${month}&year=${year}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!res.ok) {

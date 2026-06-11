@@ -72,7 +72,7 @@ function setupHeader() {
 async function loadArchiveData() {
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch('http://127.0.0.1:8081/tickets', {
+        const res = await fetch('/tickets', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -160,7 +160,7 @@ async function viewDetail(id) {
     let logsHtml = '<div class="text-center text-slate-400 text-xs italic py-4">Tidak ada riwayat aktivitas.</div>';
 
     try {
-        const res = await fetch(`http://127.0.0.1:8081/tickets/${id}/logs`, {
+        const res = await fetch(`/tickets/${id}/logs`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -369,7 +369,7 @@ async function exportBAPPDF(id) {
     doc.setTextColor(40); doc.text("Kondisi Awal (Terdampak)", 34, currentY + 6); doc.text("Hasil Akhir (Telah Dipulihkan)", 125, currentY + 6);
     currentY += 9;
 
-    const base = "http://127.0.0.1:8081";
+    const base = "";
     let imgB = null;
     let imgA = null;
     
@@ -391,7 +391,7 @@ async function exportBAPPDF(id) {
     // Fetch Logs
     try {
         const token = localStorage.getItem('galasus_token');
-        const res = await fetch(`http://127.0.0.1:8081/tickets/${id}/logs`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const res = await fetch(`/tickets/${id}/logs`, { headers: { 'Authorization': `Bearer ${token}` } });
         if (res.ok) {
             const logs = await res.json();
             if (logs && logs.length > 0) {
@@ -476,4 +476,4 @@ window.deleteArchive = async function(id) {
         console.error('Error deleting archive:', error);
         showNotification('Terjadi kesalahan jaringan saat menghapus arsip.', 'error');
     }
-};
+};

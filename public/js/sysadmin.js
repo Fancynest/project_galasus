@@ -60,7 +60,7 @@ function updateStatistics(data) {
 async function loadUsers() {
     const token = localStorage.getItem('galasus_token');
     try {
-        const response = await fetch('http://127.0.0.1:8081/users', {
+        const response = await fetch('/users', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -173,7 +173,7 @@ window.resetSandi = async function(userId) {
     
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch(`http://127.0.0.1:8081/users/${userId}/reset-password`, {
+        const res = await fetch(`/users/${userId}/reset-password`, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -193,7 +193,7 @@ async function toggleStatus(userId) {
 
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch(`http://127.0.0.1:8081/users/${userId}`, {
+        const res = await fetch(`/users/${userId}`, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ full_name: user.full_name, email: user.email, role: user.role, status: newStatus })
@@ -211,7 +211,7 @@ async function editUser(userId) {
     
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch(`http://127.0.0.1:8081/users/${userId}`, {
+        const res = await fetch(`/users/${userId}`, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ full_name: newName, email: user.email, role: user.role, status: user.status })
@@ -227,7 +227,7 @@ async function deleteUser(userId) {
     
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch(`http://127.0.0.1:8081/users/${userId}`, {
+        const res = await fetch(`/users/${userId}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const token = localStorage.getItem('galasus_token');
             try {
-                const res = await fetch('http://127.0.0.1:8081/register', {
+                const res = await fetch('/register', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)

@@ -21,7 +21,7 @@ if (token) {
     setInterval(() => {
         const liveToken = localStorage.getItem('galasus_token');
         if(liveToken) {
-            fetch('http://127.0.0.1:8081/heartbeat', {
+            fetch('/heartbeat', {
                 headers: { 'Authorization': `Bearer ${liveToken}` }
             }).catch(e => console.error("Kegagalan sinkronisasi sesi", e));
         }

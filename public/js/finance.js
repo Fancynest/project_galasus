@@ -46,19 +46,19 @@ async function loadFinanceData() {
     const range = rangeElement ? rangeElement.value : '30days';
 
     try {
-        const resTrans = await fetch(`http://127.0.0.1:8081/transactions?range=${range}`, { 
+        const resTrans = await fetch(`/transactions?range=${range}`, { 
             headers: { 'Authorization': `Bearer ${token}` } 
         });
         const dataTrans = await resTrans.json();
         allTransactions = Array.isArray(dataTrans) ? dataTrans : [];
 
-        const resProj = await fetch(`http://127.0.0.1:8081/projections`, { 
+        const resProj = await fetch(`/projections`, { 
             headers: { 'Authorization': `Bearer ${token}` } 
         });
         const dataProj = await resProj.json();
         allProjections = Array.isArray(dataProj) ? dataProj : [];
 
-        const resClient = await fetch(`http://127.0.0.1:8081/clients`, { 
+        const resClient = await fetch(`/clients`, { 
             headers: { 'Authorization': `Bearer ${token}` } 
         });
         const dataClient = await resClient.json();
@@ -185,7 +185,7 @@ window.editProjection = async function(id) {
 
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch(`http://127.0.0.1:8081/projections/${id}`, {
+        const res = await fetch(`/projections/${id}`, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ title: proj.title, amount: parseFloat(newAmount), due_date: proj.due_date })
@@ -201,7 +201,7 @@ window.deleteProjection = async function(id) {
     if (!await GalasusDialog.confirm("Konfirmasi Keamanan: Apakah Anda yakin ingin menghapus alokasi anggaran ini?")) return;
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch(`http://127.0.0.1:8081/projections/${id}`, {
+        const res = await fetch(`/projections/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -216,7 +216,7 @@ window.executePayment = async function(id) {
     if (!await GalasusDialog.confirm("Otorisasi Akses: Apakah Anda yakin ingin merealisasikan anggaran ini menjadi pengeluaran aktual?")) return;
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch(`http://127.0.0.1:8081/projections/${id}/execute`, {
+        const res = await fetch(`/projections/${id}/execute`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -558,7 +558,7 @@ async function markAsPaid(id) {
     
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch(`http://127.0.0.1:8081/transactions/${id}`, { 
+        const res = await fetch(`/transactions/${id}`, { 
             method: 'PUT', 
             headers: { 
                 'Authorization': `Bearer ${token}`,
@@ -576,7 +576,7 @@ async function markAsPaid(id) {
 
 async function executePayment(id) {
     if(!await GalasusDialog.confirm("Konfirmasi Eksekusi: Apakah Anda ingin merealisasikan proyeksi anggaran ini menjadi beban pengeluaran aktual?")) return;
-    const res = await fetch(`http://127.0.0.1:8081/projections/${id}/execute`, { 
+    const res = await fetch(`/projections/${id}/execute`, { 
         method: 'POST', 
         headers: { 'Authorization': `Bearer ${localStorage.getItem('galasus_token')}` } 
     });
@@ -591,7 +591,7 @@ async function deleteProjection(id) {
     if(!await GalasusDialog.confirm("Konfirmasi Hapus: Apakah Anda yakin ingin membatalkan dan menghapus jadwal alokasi anggaran ini?")) return;
     try {
         const token = localStorage.getItem('galasus_token');
-        const res = await fetch(`http://127.0.0.1:8081/projections/${id}`, { 
+        const res = await fetch(`/projections/${id}`, { 
             method: 'DELETE', 
             headers: { 'Authorization': `Bearer ${token}` } 
         });
@@ -751,7 +751,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 status: 'Pending' 
             };
             try {
-                const res = await fetch('http://127.0.0.1:8081/transactions', { method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+                const res = await fetch('/transactions', { method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
                 if(res.ok) { 
                     closeAllModals(); 
                     loadFinanceData(); 
@@ -774,10 +774,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 due_date: new Date(document.getElementById('proj-due').value).toISOString() 
             };
             try {
-                let url = 'http://127.0.0.1:8081/projections';
+                let url = '/projections';
                 let method = 'POST';
                 if (activeEditProjId) {
-                    url = `http://127.0.0.1:8081/projections/${activeEditProjId}`;
+                    url = `/projections/${activeEditProjId}`;
                     method = 'PUT';
                 }
                 const res = await fetch(url, { method: method, headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });

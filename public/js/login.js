@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alertBox.classList.add('hidden'); 
 
         try {
-            const response = await fetch('http://127.0.0.1:8081/login', {
+            const response = await fetch('/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // Mengirimkan request ke backend untuk pembaruan kata sandi
-                const changeRes = await fetch('http://127.0.0.1:8081/change-password', {
+                const changeRes = await fetch('/change-password', {
                     method: 'POST',
                     headers: { 
                         'Authorization': `Bearer ${data.token}`,

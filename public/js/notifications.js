@@ -73,7 +73,7 @@ async function fetchNotifications() {
     if (!token) return;
 
     try {
-        const res = await fetch('http://127.0.0.1:8081/notifications', {
+        const res = await fetch('/notifications', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!res.ok) return;
@@ -140,7 +140,7 @@ async function handleNotifClick(notifId, ticketId) {
     
     // Tandai sebagai dibaca
     try {
-        await fetch(`http://127.0.0.1:8081/notifications/${notifId}/read`, {
+        await fetch(`/notifications/${notifId}/read`, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}` }
         });

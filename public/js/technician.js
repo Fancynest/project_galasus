@@ -94,7 +94,7 @@ function switchTab(status, navId) {
 async function loadTickets() {
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch('http://127.0.0.1:8081/tickets', {
+        const res = await fetch('/tickets', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -198,7 +198,7 @@ async function takeTicket(dbId) {
     const token = localStorage.getItem('galasus_token');
     
     try {
-        const res = await fetch(`http://127.0.0.1:8081/tickets/take/${dbId}`, {
+        const res = await fetch(`/tickets/take/${dbId}`, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -280,7 +280,7 @@ async function submitFinalWork() {
     if (fa) formData.append('foto_after', fa);
     
     try {
-        const res = await fetch(`http://127.0.0.1:8081/tickets/report/${ticketId}`, {
+        const res = await fetch(`/tickets/report/${ticketId}`, {
             method: 'POST', 
             headers: { 'Authorization': `Bearer ${token}` }, 
             body: formData 
@@ -297,7 +297,7 @@ async function submitFinalWork() {
 async function loadTicketLogs(id) {
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch(`http://127.0.0.1:8081/tickets/${id}/logs`, {
+        const res = await fetch(`/tickets/${id}/logs`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const logs = await res.json();
@@ -339,7 +339,7 @@ async function handleAddLog(e) {
     const desc = document.getElementById('tech-log-desc').value;
 
     try {
-        const res = await fetch(`http://127.0.0.1:8081/tickets/${ticketId}/logs`, {
+        const res = await fetch(`/tickets/${ticketId}/logs`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ description: desc })
@@ -360,7 +360,7 @@ async function promptHandoff() {
 
     const token = localStorage.getItem('galasus_token');
     try {
-        const res = await fetch('http://127.0.0.1:8081/technicians', {
+        const res = await fetch('/technicians', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const techs = await res.json();
@@ -378,7 +378,7 @@ async function promptHandoff() {
         let selectedId = await GalasusDialog.promptSelect("Pilih Teknisi Tujuan untuk melanjutkan delegasi:", options);
         
         if (selectedId) {
-            const assignRes = await fetch(`http://127.0.0.1:8081/tickets/${ticketId}/assign`, {
+            const assignRes = await fetch(`/tickets/${ticketId}/assign`, {
                 method: 'PUT',
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ target_user_id: parseInt(selectedId) })
@@ -469,7 +469,7 @@ async function generatePDF(ticketId) {
     doc.setTextColor(40); doc.text("Kondisi Awal (Terdampak)", 35, y + 6); doc.text("Hasil Akhir (Telah Dipulihkan)", 120, y + 6);
     y += 9;
 
-    const base = "http://127.0.0.1:8081";
+    const base = "";
     const imgB = await loadImage(base + getVal(['FotoBefore', 'foto_before']));
     const imgA = await loadImage(base + getVal(['FotoAfter', 'foto_after']));
 
