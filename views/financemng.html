@@ -380,12 +380,14 @@
       </div>
       <form id="finance-main-form" class="p-6 md:p-8 space-y-5">
         <input type="hidden" id="field-type">
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">Identitas Klien / Mitra Bisnis</label>
-          <input id="field-name" type="text" list="client-list"
-            class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200"
-            placeholder="Contoh: PT. Inovasi Teknologi" required>
-          <datalist id="client-list"></datalist>
+        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+          <label class="block text-xs font-bold text-slate-800 uppercase tracking-wide mb-1">Pemilihan Entitas Klien</label>
+          <select id="select-klien-finance" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200" onchange="toggleManualClientFinance()">
+            <option value="">-- Mode Manual (Klien Tidak Terdaftar / Guest) --</option>
+          </select>
+          <input id="field-name" type="text"
+            class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400"
+            placeholder="Ketik nama klien atau mitra bisnis..." required>
         </div>
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1.5">Uraian / Deskripsi Layanan</label>

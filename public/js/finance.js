@@ -690,21 +690,45 @@ window.openTransactionForm = function(type) {
         }
     }
     
-    // Populate Datalist Klien
-    const dataList = document.getElementById('client-list');
-    if (dataList && allClients && allClients.length > 0) {
-        dataList.innerHTML = '';
+    // Populate Select Klien
+    const selClient = document.getElementById('select-klien-finance');
+    if (selClient && allClients) {
+        selClient.innerHTML = '<option value="">-- Mode Manual (Klien Tidak Terdaftar / Guest) --</option>';
         allClients.forEach(c => {
             if ((c.status || '').toLowerCase() === 'active') {
                 const opt = document.createElement('option');
-                opt.value = c.name || c.company_name;
-                dataList.appendChild(opt);
+                opt.value = c.id; // Or you could use c.id if backend takes it, but here input uses name
+                // To keep it simple, let's put the name in data-name so the toggle can fetch it
+                opt.setAttribute('data-name', c.name || c.company_name);
+                opt.textContent = c.name || c.company_name;
+                selClient.appendChild(opt);
             }
         });
+        // Reset manual input
+        const inp = document.getElementById('field-name');
+        if(inp) {
+            inp.value = '';
+            inp.readOnly = false;
+            inp.classList.remove('bg-slate-100', 'text-slate-500');
+        }
     }
 
     openModalCustom('modal-transaction-form');
 };
+
+window.toggleManualClientFinance = function() {
+    const sel = document.getElementById('select-klien-finance');
+    const inp = document.getElementById('field-name');
+    if (sel.value) {
+        inp.value = sel.options[sel.selectedIndex].getAttribute('data-name');
+        inp.readOnly = true;
+        inp.classList.add('bg-slate-100', 'text-slate-500');
+    } else {
+        inp.value = '';
+        inp.readOnly = false;
+        inp.classList.remove('bg-slate-100', 'text-slate-500');
+    }
+}
 
 // --- EVENT LISTENERS INISIALISASI ---
 document.addEventListener('DOMContentLoaded', () => {
