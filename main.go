@@ -42,7 +42,7 @@ type Transaction struct {
 	ClientVendor  string    `gorm:"column:client_vendor" json:"client_vendor"`
 	Amount        float64   `gorm:"column:amount" json:"amount"`
 	Description   string    `gorm:"column:description" json:"description"`
-	IssueDate     time.Time `gorm:"column:issue_date;default:GETDATE()" json:"issue_date"`
+	IssueDate     time.Time `gorm:"column:issue_date;default:CURRENT_TIMESTAMP" json:"issue_date"`
 	DueDate       time.Time `gorm:"column:due_date" json:"due_date"`
 	Status        string    `gorm:"column:status;default:'Pending'" json:"status"`
 }
