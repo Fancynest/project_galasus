@@ -364,8 +364,9 @@ func main() {
 		req := new(User)
 		c.Bind(req)
 
-		if !strings.HasSuffix(strings.ToLower(req.Email), "@galasus.com") {
-			return c.JSON(400, map[string]string{"message": "Hanya email dengan domain @galasus.com yang diizinkan!"})
+		emailLower := strings.ToLower(req.Email)
+		if !strings.HasSuffix(emailLower, "@galasus.com") && !strings.HasSuffix(emailLower, "@teknisi") && !strings.HasSuffix(emailLower, "@finance") {
+			return c.JSON(400, map[string]string{"message": "Hanya email dengan domain korporat (@galasus.com, @teknisi, @finance) yang diizinkan!"})
 		}
 
 		hashedBytes, _ := bcrypt.GenerateFromPassword([]byte("Galasus123!"), bcrypt.DefaultCost)
