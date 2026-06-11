@@ -132,7 +132,7 @@ type LoginRequest struct {
 
 func main() {
 	// [MAINTENANCE] Konfigurasi koneksi ke Database (Berpindah ke MariaDB/MySQL untuk VPS)
-	dsn := "galasus:RahasiaGalasus2026!@tcp(127.0.0.1:3306)/galasusdb?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "galasus:RahasiaGalasus2026@tcp(127.0.0.1:3306)/galasusdb?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Gagal konek database: ", err)
