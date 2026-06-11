@@ -19,6 +19,9 @@ import (
 	"golang.org/x/time/rate"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
+	"github.com/shirou/gopsutil/v3/host"
+	"github.com/shirou/gopsutil/v3/mem"
 )
 
 type User struct {
@@ -297,6 +300,33 @@ func main() {
 
 	e.GET("/heartbeat", func(c echo.Context) error {
 		return c.JSON(200, map[string]string{"message": "OK"})
+	}, echojwt.WithConfig(jwtConfig), satpamMiddleware)
+
+	e.GET("/api/system/metrics", func(c echo.Context) error {
+		// Dapatkan informasi memori (RAM)
+		v, errMem := mem.VirtualMemory()
+		memLoad := 0.0
+		if errMem == nil {
+			memLoad = v.UsedPercent
+		}
+
+		// Dapatkan uptime host
+		h, errHost := host.Info()
+		uptimeSeconds := uint64(0)
+		if errHost == nil {
+			uptimeSeconds = h.Uptime
+		}
+
+		// Hitung persentase Uptime (Simulasi sederhana dengan membulatkan menjadi 99.xx)
+		// Dalam realita, uptime dihitung berdasarkan log monitoring. 
+		// Karena kita ambil uptime OS secara langsung, ini adalah waktu sistem hidup.
+		// Untuk dasbor, kita tampilkan dalam bentuk hari/jam atau persentase statis jika baru jalan.
+		// Mari kita kembalikan raw data agar frontend yang format.
+		return c.JSON(200, map[string]interface{}{
+			"ram_usage_percent": fmt.Sprintf("%.1f%%", memLoad),
+			"uptime_seconds":    uptimeSeconds,
+			"os_name":           h.OS,
+		})
 	}, echojwt.WithConfig(jwtConfig), satpamMiddleware)
 
 	// ==========================================
