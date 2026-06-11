@@ -244,6 +244,18 @@
  <form id="form-register" class="p-5 md:p-6 space-y-4 bg-white ">
  <div class="space-y-1.5">
  <label class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest"
+ for="reg-role">Klasifikasi Kewenangan</label>
+ <select id="reg-role"
+ class="w-full border-slate-200 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-galasus-blue/20 outline-none bg-white shadow-sm"
+ onchange="updateEmailPlaceholder()" required>
+ <option value="">-- Tetapkan Level Hierarki --</option>
+ <option value="super admin">Super Admin (Full Root Access)</option>
+ <option value="finance">Manajer Keuangan (Read/Write DB)</option>
+ <option value="technician">Teknisi Lapangan (Restricted Access)</option>
+ </select>
+ </div>
+ <div class="space-y-1.5">
+ <label class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest"
  for="reg-name">Nama Direktori Lengkap</label>
  <input id="reg-name"
  class="w-full border-slate-200 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-galasus-blue/20 outline-none shadow-sm"
@@ -254,19 +266,7 @@
  for="reg-email">Alamat Surel (Korporat)</label>
  <input id="reg-email"
  class="w-full border-slate-200 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-galasus-blue/20 outline-none shadow-sm"
- placeholder="nama@galasus.com" type="email" required />
- </div>
- <div class="space-y-1.5">
- <label class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest"
- for="reg-role">Klasifikasi Kewenangan</label>
- <select id="reg-role"
- class="w-full border-slate-200 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-galasus-blue/20 outline-none bg-white shadow-sm"
- required>
- <option value="">-- Tetapkan Level Hierarki --</option>
- <option value="super admin">Super Admin (Full Root Access)</option>
- <option value="finance">Manajer Keuangan (Read/Write DB)</option>
- <option value="technician">Teknisi Lapangan (Restricted Access)</option>
- </select>
+ placeholder="contoh@galasus.com" type="text" required />
  </div>
 
  <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-start gap-2.5 mt-2">

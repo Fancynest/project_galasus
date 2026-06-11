@@ -297,11 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const emailInput = document.getElementById('reg-email').value;
             
-            // VALIDASI DOMAIN EKSEKUTIF (Front-End)
-            if(!emailInput.endsWith('@galasus.com')) {
-                await GalasusDialog.alert("Penolakan Keamanan: Registrasi akses eksklusif hanya diperuntukkan bagi alamat surel dengan domain korporat tervalidasi (@galasus.com).");
-                return;
-            }
+            // Validasi domain dihapus untuk mendukung format @teknisi dan @finance
 
             const body = {
                 full_name: document.getElementById('reg-name').value,
@@ -331,3 +327,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+window.updateEmailPlaceholder = function() {
+    const role = document.getElementById('reg-role').value;
+    const emailInput = document.getElementById('reg-email');
+    if (!emailInput) return;
+    
+    if (role === 'technician') {
+        emailInput.placeholder = 'contoh@teknisi';
+    } else if (role === 'finance') {
+        emailInput.placeholder = 'contoh@finance';
+    } else {
+        emailInput.placeholder = 'contoh@galasus.com';
+    }
+};
