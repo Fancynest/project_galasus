@@ -49,32 +49,39 @@ function updateStatistics(data) {
     const statSuspend = document.getElementById('stat-suspended');
     if (statSuspend) statSuspend.textContent = suspendCount;
 
-    // Fetch Metrik Infrastruktur (Real-time)
-    fetch('/api/system/metrics', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('galasus_token')}` }
-    })
-    .then(res => res.json())
-    .then(metrics => {
-        const statDb = document.getElementById('stat-db');
-        if (statDb) statDb.innerHTML = `${metrics.ram_usage_percent} <span class="text-[10px] md:text-xs font-normal text-slate-400">/ Memori</span>`;
-        
-        const statUptime = document.getElementById('stat-uptime');
-        if (statUptime) {
-            // Konversi detik ke format jam/hari
-            const sec = metrics.uptime_seconds;
-            const days = Math.floor(sec / (3600*24));
-            const hours = Math.floor(sec % (3600*24) / 3600);
-            const mins = Math.floor(sec % 3600 / 60);
+    // Fetch Metrik Infrastruktur (Real-time dengan Auto-Refresh)
+    const fetchMetrics = () => {
+        fetch('/api/system/metrics', {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('galasus_token')}` }
+        })
+        .then(res => res.json())
+        .then(metrics => {
+            const statDb = document.getElementById('stat-db');
+            if (statDb) statDb.innerHTML = `${metrics.ram_usage_percent} <span class="text-[10px] md:text-xs font-normal text-slate-400">/ Memori</span>`;
             
-            let uptimeStr = "";
-            if (days > 0) uptimeStr += `${days} Hari `;
-            if (hours > 0) uptimeStr += `${hours} Jam `;
-            uptimeStr += `${mins} Menit`;
-            
-            statUptime.textContent = uptimeStr || "Baru saja menyala";
-        }
-    })
-    .catch(err => console.error("Gagal mengambil metrik:", err));
+            const statUptime = document.getElementById('stat-uptime');
+            if (statUptime) {
+                const sec = metrics.uptime_seconds;
+                const days = Math.floor(sec / (3600*24));
+                const hours = Math.floor(sec % (3600*24) / 3600);
+                const mins = Math.floor(sec % 3600 / 60);
+                
+                let uptimeStr = "";
+                if (days > 0) uptimeStr += `${days} Hari `;
+                if (hours > 0) uptimeStr += `${hours} Jam `;
+                uptimeStr += `${mins} Menit`;
+                
+                statUptime.textContent = uptimeStr || "Baru saja menyala";
+            }
+        })
+        .catch(err => console.error("Gagal mengambil metrik:", err));
+    };
+
+    // Eksekusi pertama kali
+    fetchMetrics();
+    
+    // Set auto-refresh setiap 10 detik (10000 ms)
+    setInterval(fetchMetrics, 10000);
 }
 
 async function loadUsers() {
