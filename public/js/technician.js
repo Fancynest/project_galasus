@@ -166,7 +166,11 @@ function renderTicketList() {
                     </div>`;
             } else {
                 statusBadge = `<span class="px-2 py-1 bg-emerald-100 text-emerald-600 rounded-md text-[10px] font-bold">Selesai</span>`;
-                actionBtn = `<button onclick="generatePDF('${t.id}')" class="w-full sm:w-auto px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1 shadow-md transition-all"><span class="material-symbols-outlined text-sm">download</span> Unduh Bukti</button>`;
+                actionBtn = `
+                    <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                        <button type="button" onclick="viewCompletedTicket('${t.id}', '${noTiket}', '${pelanggan}')" class="w-full sm:w-auto px-4 py-2 bg-slate-800 hover:bg-slate-700 active:scale-95 text-white text-xs font-bold rounded-lg shadow-md transition-all">Lihat Detail</button>
+                        <button onclick="generatePDF('${t.id}')" class="w-full sm:w-auto px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1 shadow-md transition-all"><span class="material-symbols-outlined text-sm">download</span> Unduh Bukti</button>
+                    </div>`;
             }
         }
 
@@ -248,15 +252,84 @@ function finishTicket(dbId, noTiket, pelanggan) {
         titleElem.setAttribute('data-active-id', dbId);
         document.getElementById('tech-report-form').reset();
         
+        document.getElementById('input-lokasi').disabled = false;
+        document.getElementById('input-diagnostik').disabled = false;
+        document.getElementById('input-tindakan').disabled = false;
+        document.getElementById('input-inventaris').disabled = false;
+        
         const pb = document.getElementById('preview-before');
         const pa = document.getElementById('preview-after');
-        if(pb) { pb.classList.add('hidden'); pb.querySelector('img').src = ''; }
-        if(pa) { pa.classList.add('hidden'); pa.querySelector('img').src = ''; }
+        if(pb) { pb.classList.add('hidden'); pb.querySelector('img').src = ''; pb.querySelector('button').classList.remove('hidden'); }
+        if(pa) { pa.classList.add('hidden'); pa.querySelector('img').src = ''; pa.querySelector('button').classList.remove('hidden'); }
         
+        const submitBtn = document.querySelector('#tech-report-form button[type="submit"]');
+        if(submitBtn) submitBtn.classList.remove('hidden');
+
         // Eksekusi auto-scroll untuk optimalisasi antarmuka seluler
         if(window.innerWidth < 768) {
             document.getElementById('tech-report-form').scrollIntoView({behavior: 'smooth'});
         }
+    }
+}
+
+function viewCompletedTicket(dbId, noTiket, pelanggan) {
+    document.getElementById('empty-state').classList.add('hidden');
+    document.getElementById('tech-timeline-section').classList.remove('hidden');
+    document.getElementById('tech-report-form').classList.remove('hidden');
+    
+    const logForm = document.getElementById('tech-log-form');
+    if (logForm) logForm.classList.add('hidden');
+    
+    const delegBtn = document.querySelector('button[onclick="promptHandoff()"]');
+    if (delegBtn) delegBtn.classList.add('hidden');
+    
+    loadTicketLogs(dbId);
+    
+    const titleElem = document.getElementById('active-ticket-title');
+    if (titleElem) {
+        titleElem.textContent = `Riwayat Penyelesaian: ${noTiket} - ${pelanggan}`;
+        titleElem.setAttribute('data-active-id', dbId);
+    }
+
+    const ticket = allTickets.find(t => t.id == dbId || t.ID == dbId);
+    if(ticket) {
+        document.getElementById('input-lokasi').value = ticket.lokasi_pengerjaan || '';
+        document.getElementById('input-lokasi').disabled = true;
+        
+        document.getElementById('input-diagnostik').value = ticket.diagnostik || '';
+        document.getElementById('input-diagnostik').disabled = true;
+        
+        document.getElementById('input-tindakan').value = ticket.tindakan || '';
+        document.getElementById('input-tindakan').disabled = true;
+        
+        document.getElementById('input-inventaris').value = ticket.inventaris || '';
+        document.getElementById('input-inventaris').disabled = true;
+        
+        const pb = document.getElementById('preview-before');
+        const pa = document.getElementById('preview-after');
+        if(pb) { 
+            if(ticket.foto_before) {
+                pb.classList.remove('hidden'); pb.querySelector('img').src = ticket.foto_before;
+                pb.querySelector('button').classList.add('hidden');
+            } else {
+                pb.classList.add('hidden'); 
+            }
+        }
+        if(pa) { 
+            if(ticket.foto_after) {
+                pa.classList.remove('hidden'); pa.querySelector('img').src = ticket.foto_after; 
+                pa.querySelector('button').classList.add('hidden');
+            } else {
+                pa.classList.add('hidden');
+            }
+        }
+    }
+    
+    const submitBtn = document.querySelector('#tech-report-form button[type="submit"]');
+    if(submitBtn) submitBtn.classList.add('hidden');
+
+    if(window.innerWidth < 768) {
+        document.getElementById('tech-report-form').scrollIntoView({behavior: 'smooth'});
     }
 }
 
