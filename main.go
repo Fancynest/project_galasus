@@ -190,6 +190,11 @@ func main() {
 	e.Static("/assets", "assets")
 	e.Static("/views", "views")
 
+	// Redirect root URL ke halaman Login
+	e.GET("/", func(c echo.Context) error {
+		return c.Redirect(http.StatusMovedPermanently, "/views/login.html")
+	})
+
 	// [SECURITY] Konfigurasi JWT (JSON Web Token)
 	// Pastikan 'SigningKey' ini diubah menjadi environment variable di server production.
 	jwtConfig := echojwt.Config{
