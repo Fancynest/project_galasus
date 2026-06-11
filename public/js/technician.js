@@ -123,7 +123,7 @@ function renderTicketList() {
             const searchableString = `
                 ${t.no_tiket || t.NoTiket || t.ticket_id || ''} 
                 ${t.pelanggan || t.Pelanggan || ''} 
-                ${t.masalah || t.Masalah || ''} 
+                ${t.masalah || t.Masalah || t.issue_description || ''} 
                 ${t.status || t.Status || ''}
             `.toLowerCase();
             matchSearch = keywords.every(kw => searchableString.includes(kw));

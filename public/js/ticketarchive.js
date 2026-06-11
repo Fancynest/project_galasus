@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const searchableString = `
                     ${t.no_tiket || t.ticket_id || ''} 
                     ${t.pelanggan || t.Pelanggan || ''} 
-                    ${t.masalah || t.Masalah || ''} 
+                    ${t.masalah || t.Masalah || t.issue_description || ''} 
                     ${t.teknisi || t.Teknisi || ''}
                     ${t.status || t.Status || ''}
                 `.toLowerCase();

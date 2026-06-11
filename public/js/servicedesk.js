@@ -512,7 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const searchableString = `
                 ${t.no_tiket || ''} 
                 ${t.pelanggan || ''} 
-                ${t.masalah || ''} 
+                ${t.masalah || t.issue_description || ''} 
                 ${t.teknisi || ''} 
                 ${t.status || ''}
             `.toLowerCase();
