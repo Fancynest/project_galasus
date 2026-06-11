@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html class="light" lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Galasus | Manajemen Klien & Aset</title>
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  
-  <script id="tailwind-config">
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            "galasus-blue": "#0274BE",
-            "warning-red": "#EF4444",
-            "error": "#ba1a1a"
-          },
-          fontFamily: {
-            "body-md": ["Inter", "sans-serif"]
-          }
-        }
-      }
-    }
-  </script>
-  
-  <style>
-    .glass-card {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(226, 232, 240, 0.6);
-      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
-    }
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
-  </style>
+ <meta charset="utf-8" />
+ <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+ <title>Galasus | Manajemen Klien & Aset</title>
+ 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+ <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+ <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+ <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+ 
+ <script id="tailwind-config">
+ tailwind.config = {
+ theme: {
+ extend: {
+ colors: {
+ "galasus-blue": "#0274BE",
+ "warning-red": "#EF4444",
+ "error": "#ba1a1a"
+ },
+ fontFamily: { sans: ["Plus Jakarta Sans", "sans-serif"] }
+ }
+ }
+ }
+ </script>
+ 
+ <style>
+ .glass-card {
+ background: rgba(255, 255, 255, 0.8);
+ backdrop-filter: blur(12px);
+ border: 1px solid rgba(226, 232, 240, 0.6);
+ box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+ }
+ .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+ .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+ .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+ 
+ </style>
 
-    <link rel="icon" type="image/svg+xml" href="/public/photos/Logo-Galasus178x40.svg">
+ <link rel="icon" type="image/svg+xml" href="/public/photos/Logo-Galasus178x40.svg">
 </head>
 
-<body class="bg-slate-50 font-body-md text-slate-800 min-h-screen flex overflow-hidden">
-  
-  <aside id="mobile-sidebar" class="transform -translate-x-full md:translate-x-0 transition-transform duration-300 fixed inset-y-0 left-0 w-64 bg-white/95 md:bg-white/80 backdrop-blur-xl border-r border-slate-200/50 flex flex-col p-4 gap-2 z-50 shadow-2xl md:shadow-none">
+<body class="font-sans antialiased bg-slate-50 text-slate-800 min-h-screen flex overflow-hidden">
+ 
+   <aside id="mobile-sidebar" class="transform -translate-x-full md:translate-x-0 transition-transform duration-300 fixed inset-y-0 left-0 w-64 bg-white/95 md:bg-white/80 backdrop-blur-xl border-r border-slate-200/50 flex flex-col p-4 gap-2 z-50 shadow-2xl md:shadow-none">
+    
     <button id="close-sidebar-btn" class="md:hidden absolute top-4 right-4 text-slate-400 hover:text-error transition-colors">
         <span class="material-symbols-outlined">close</span>
     </button>
+
     <div class="px-2 py-4 mb-4 flex items-center justify-center border-b border-slate-100 mt-4 md:mt-0">
       <img src="/public/photos/Logo-Galasus178x40.svg" alt="Logo Galasus" class="w-full max-w-[150px] object-contain" />
     </div>
@@ -56,7 +57,7 @@
         <span class="material-symbols-outlined">dashboard</span>
         <span>Dasbor Utama</span>
       </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 bg-galasus-blue text-white rounded-lg shadow-md font-semibold transition-all duration-300" href="#">
+      <a class="flex items-center gap-3 px-3 py-2.5 bg-galasus-blue text-white rounded-lg shadow-md font-semibold transition-all duration-300" href="/views/clientmanagement.html">
         <span class="material-symbols-outlined">groups</span>
         <span>Manajemen Klien</span>
       </a>
@@ -81,322 +82,323 @@
     </div>
   </aside>
 
-  <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
+ <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
-  <main class="flex-1 ml-0 md:ml-64 flex flex-col h-screen">
-    <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 md:px-8 py-3 md:py-4">
-      <div class="flex items-center gap-4">
-        <button id="open-sidebar-btn" class="md:hidden text-slate-600 hover:text-galasus-blue p-2">
-            <span class="material-symbols-outlined">menu</span>
-        </button>
-        <h1 class="text-lg font-bold text-slate-800 hidden sm:block">Direktori Infrastruktur Klien & Aset</h1>
-      </div>
-      <div class="flex items-center gap-4">
-        <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
-        <div class="flex items-center gap-3">
-          <div class="text-right hidden md:block">
-            <p class="text-xs font-bold text-slate-800" id="user-name">Memuat...</p>
-            <p class="text-[10px] text-slate-500 uppercase tracking-wider font-semibold" id="user-role">Memuat...</p>
-          </div>
-          <div class="w-9 h-9 rounded-full bg-galasus-blue/10 flex items-center justify-center border border-galasus-blue/20">
-            <span class="text-galasus-blue font-bold text-sm" id="user-initials">??</span>
-          </div>
-        </div>
-      </div>
-    </header>
+ <main class="flex-1 ml-0 md:ml-64 flex flex-col h-screen">
+ <header class="sticky top-0 z-30 bg-white backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 md:px-8 py-3 md:py-4">
+ <div class="flex items-center gap-4">
+ <button id="open-sidebar-btn" class="md:hidden text-slate-600 hover:text-galasus-blue p-2">
+ <span class="material-symbols-outlined">menu</span>
+ </button>
+ <h1 class="text-lg font-bold text-slate-800 hidden sm:block">Direktori Infrastruktur Klien & Aset</h1>
+ </div>
+ <div class="flex items-center gap-4">
+ <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
+ <div class="flex items-center gap-3">
+ <div class="text-right hidden md:block">
+ <p class="text-xs font-bold text-slate-800 " id="user-name">Memuat...</p>
+ <p class="text-[10px] text-slate-500 uppercase tracking-wider font-semibold" id="user-role">Memuat...</p>
+ </div>
+ <div class="w-9 h-9 rounded-full bg-galasus-blue/10 flex items-center justify-center border border-galasus-blue/20">
+ <span class="text-galasus-blue font-bold text-sm" id="user-initials">??</span>
+ </div>
+ </div>
+ </div>
+ </header>
 
-    <div class="flex-1 p-4 md:p-8 overflow-y-auto custom-scrollbar">
-      <div class="max-w-[1440px] mx-auto space-y-6">
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="glass-card p-5 rounded-2xl flex items-center gap-4 border-l-4 border-l-galasus-blue">
-            <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-galasus-blue">
-                <span class="material-symbols-outlined">business</span>
+ <div class="flex-1 p-4 md:p-8 overflow-y-auto custom-scrollbar">
+ <div class="max-w-[1440px] mx-auto space-y-6">
+ 
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 xl:gap-4">
+            <div class="glass-card p-4 rounded-2xl flex items-center gap-4 border-l-4 border-l-galasus-blue">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-galasus-blue flex-shrink-0">
+                    <span class="material-symbols-outlined">business</span>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase truncate">Total Klien Aktif</p>
+                    <h3 class="text-xl font-black text-slate-800 truncate" id="stat-total">0</h3>
+                </div>
             </div>
-            <div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Total Klien Aktif</p>
-                <h3 class="text-2xl font-black text-slate-800" id="stat-total">0</h3>
+            <div class="glass-card p-4 rounded-2xl flex items-center gap-4 border-l-4 border-l-amber-500">
+                <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500 flex-shrink-0">
+                    <span class="material-symbols-outlined">confirmation_number</span>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase truncate">Ambang Batas Kuota</p>
+                    <h3 class="text-xl font-black text-slate-800 truncate" id="stat-limit">0</h3>
+                </div>
             </div>
-          </div>
-          <div class="glass-card p-5 rounded-2xl flex items-center gap-4 border-l-4 border-l-amber-500">
-            <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500">
-                <span class="material-symbols-outlined">confirmation_number</span>
+            <div class="glass-card p-4 rounded-2xl flex items-center gap-4 border-l-4 border-l-warning-red bg-red-50/30">
+                <div class="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center text-warning-red flex-shrink-0">
+                    <span class="material-symbols-outlined">warning</span>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-[9px] font-bold text-red-400 uppercase truncate">Masa Berlaku < 30 Hari</p>
+                    <h3 class="text-xl font-black text-warning-red truncate" id="stat-warning">0</h3>
+                </div>
             </div>
-            <div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Ambang Batas Kuota</p>
-                <h3 class="text-2xl font-black text-slate-800" id="stat-limit">0</h3>
+            <div class="glass-card p-4 rounded-2xl flex items-center gap-4 border-l-4 border-l-emerald-500">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 flex-shrink-0">
+                    <span class="material-symbols-outlined">dns</span>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase truncate">Total Aset Dikelola</p>
+                    <h3 class="text-xl font-black text-slate-800 truncate" id="stat-assets">0</h3>
+                </div>
             </div>
-          </div>
-          <div class="glass-card p-5 rounded-2xl flex items-center gap-4 border-l-4 border-l-warning-red bg-red-50/30">
-            <div class="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center text-warning-red">
-                <span class="material-symbols-outlined">warning</span>
-            </div>
-            <div>
-                <p class="text-[10px] font-bold text-red-400 uppercase">Masa Berlaku < 30 Hari</p>
-                <h3 class="text-2xl font-black text-warning-red" id="stat-warning">0</h3>
-            </div>
-          </div>
-          <div class="glass-card p-5 rounded-2xl flex items-center gap-4 border-l-4 border-l-emerald-500">
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500">
-                <span class="material-symbols-outlined">dns</span>
-            </div>
-            <div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Total Aset Dikelola</p>
-                <h3 class="text-2xl font-black text-slate-800" id="stat-assets">0</h3>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card rounded-2xl overflow-hidden">
-          <div class="p-4 md:p-5 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white/50 gap-3">
-            <div class="relative w-full sm:w-72">
-              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-              <input id="search-client" class="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-1 focus:ring-galasus-blue outline-none" placeholder="Penelusuran entitas perusahaan..." type="text" />
-            </div>
-            <button onclick="openAddModal()" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-2 shadow-md transition-all uppercase tracking-wider">
-              <span class="material-symbols-outlined text-sm">add</span> Provisi Klien Baru
-            </button>
-          </div>
-          
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse min-w-[800px]">
-              <thead>
-                <tr class="bg-slate-50 border-b border-slate-200 text-[10px] uppercase tracking-wider text-slate-500 font-bold">
-                  <th class="px-6 py-4">Entitas Kemitraan</th>
-                  <th class="px-6 py-4">Kontak Administratif</th>
-                  <th class="px-6 py-4 w-56">Tier Layanan Bantuan</th>
-                  <th class="px-6 py-4 text-center">Akhir Kontrak</th>
-                  <th class="px-6 py-4 text-center">Aset</th>
-                  <th class="px-6 py-4 text-right">Opsi Operasional</th>
-                </tr>
-              </thead>
-              <tbody id="client-table-body" class="text-sm divide-y divide-slate-100 bg-white">
-              </tbody>
-            </table>
-          </div>
         </div>
 
-      </div>
-    </div>
-  </main>
+ <div class="glass-card rounded-2xl overflow-hidden">
+ <div class="p-4 md:p-5 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white gap-3">
+ <div class="relative w-full sm:w-72">
+ <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+ <input id="search-client" class="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-1 focus:ring-galasus-blue outline-none" placeholder="Penelusuran entitas perusahaan..." type="text" />
+ </div>
+ <button onclick="openAddModal()" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-2 shadow-md transition-all uppercase tracking-wider">
+ <span class="material-symbols-outlined text-sm">add</span> Provisi Klien Baru
+ </button>
+ </div>
+ 
+ <div class="overflow-x-auto">
+ <table class="w-full text-left border-collapse min-w-[800px]">
+ <thead>
+ <tr class="bg-slate-50 border-b border-slate-200 text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+ <th class="px-3 py-3 truncate">Entitas Kemitraan</th>
+ <th class="px-3 py-3 truncate">Kontak Administratif</th>
+ <th class="px-3 py-3 w-48 truncate">Tier Layanan Bantuan</th>
+ <th class="px-3 py-3 text-center truncate">Akhir Kontrak</th>
+ <th class="px-3 py-3 text-center truncate">Aset</th>
+ <th class="px-3 py-3 text-right truncate">Opsi Operasional</th>
+ </tr>
+ </thead>
+ <tbody id="client-table-body" class="text-sm divide-y divide-slate-100 bg-white ">
+ </tbody>
+ </table>
+ </div>
+ </div>
 
-  <div id="modal-detail" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] hidden pointer-events-none items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-100 overflow-hidden transform scale-95 transition-all duration-300" id="modal-content">
-      <div class="flex justify-between items-start p-6 md:p-8 border-b border-slate-100 bg-white">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center border border-slate-100">
-                <span class="material-symbols-outlined">business_center</span>
-            </div>
-            <div>
-                <h2 class="text-xl font-bold text-slate-800" id="det-name">Memuat Data...</h2>
-                <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5 font-medium">
-                    <span class="material-symbols-outlined text-sm">person</span> PIC: <span id="det-pic" class="font-semibold text-slate-700">Loading...</span>
-                </p>
-            </div>
-        </div>
-        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-2 rounded-full transition-colors -mr-2 -mt-2">
-            <span class="material-symbols-outlined">close</span>
-        </button>
-      </div>
-      <div class="p-6 md:p-8 bg-slate-50/50 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Layanan Ekstra (Add-On)</h3>
-          <div class="bg-white border border-slate-200/60 rounded-2xl p-5 text-sm font-medium text-slate-600 min-h-[120px] shadow-sm leading-relaxed" id="det-addons"></div>
-        </div>
-        <div>
-            <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Infrastruktur Terdokumentasi</h3>
-            <div class="bg-white border border-slate-200/60 rounded-2xl p-4 h-[120px] overflow-y-auto custom-scrollbar shadow-sm" id="det-assets"></div>
-        </div>
-      </div>
-      <div class="px-6 py-4 md:px-8 border-t border-slate-100 bg-white flex justify-end">
-          <button onclick="closeModal()" class="px-6 py-2.5 text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-all shadow-sm">Tutup Rincian</button>
-      </div>
-    </div>
-  </div>
+ </div>
+ </div>
+ </main>
 
-  <div id="modal-tambah-klien" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] hidden pointer-events-none items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-    <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 overflow-hidden p-6 md:p-8 transform scale-95 transition-all duration-300 max-h-[95vh] overflow-y-auto custom-scrollbar" id="modal-add-content">
-        <div class="flex justify-between items-start mb-6 border-b border-slate-100 pb-5">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-galasus-blue flex items-center justify-center border border-blue-100/50">
-                    <span class="material-symbols-outlined">domain_add</span>
-                </div>
-                <div>
-                    <h2 class="text-xl font-bold text-slate-800">Registrasi Entitas Baru</h2>
-                    <p class="text-xs text-slate-500 font-medium mt-0.5">Lengkapi form untuk mendaftarkan klien baru</p>
-                </div>
-            </div>
-            <button type="button" onclick="closeAddModal()" class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-2 rounded-full transition-colors -mr-2">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-        </div>
-        <form id="form-add-client" class="space-y-5">
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1.5">Nomenklatur Perusahaan</label>
-                <input type="text" id="add-name" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400" placeholder="Contoh: PT. Solusi Digital">
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Representatif Klien (PIC)</label>
-                    <input type="text" id="add-pic" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400" placeholder="Nama lengkap PIC">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">No. Kontak (WhatsApp)</label>
-                    <input type="text" id="add-phone" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400" placeholder="08123456789">
-                </div>
-            </div>
-            <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/60 space-y-4">
-                <p class="text-xs font-bold text-slate-800 uppercase tracking-wide">Parameter Kontrak & Kuota</p>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1.5">Paket Layanan</label>
-                        <input type="text" id="add-package" required class="w-full p-2.5 rounded-lg border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 text-sm transition-all outline-none" placeholder="10 Tiket/Bln">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1.5">Alokasi Kuota</label>
-                        <input type="number" id="add-quota" required class="w-full p-2.5 rounded-lg border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 text-sm transition-all outline-none" placeholder="10">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1.5">Tanggal Akhir Kontrak</label>
-                    <input type="date" id="add-contract" required class="w-full p-2.5 rounded-lg border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 text-sm transition-all outline-none text-slate-600">
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Layanan Tambahan</label>
-                    <textarea id="add-addons" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm h-24 resize-none transition-all duration-200 placeholder:text-slate-400" placeholder="Detail add-on (opsional)"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Manajemen Aset</label>
-                    <textarea id="add-assets" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm h-24 resize-none transition-all duration-200 placeholder:text-slate-400" placeholder="Contoh: Server A, Router B"></textarea>
-                </div>
-            </div>
-            <div class="pt-6 flex gap-4 border-t border-slate-100 mt-6">
-                <button type="button" onclick="closeAddModal()" class="flex-1 py-3 bg-white border border-slate-200 text-slate-700 font-semibold text-sm rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-colors">Batalkan</button>
-                <button type="submit" class="flex-1 py-3 bg-galasus-blue text-white font-semibold text-sm rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200">Eksekusi Registrasi</button>
-            </div>
-        </form>
-    </div>
-  </div>
+ <div id="modal-detail" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] hidden pointer-events-none items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+ <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-100 overflow-hidden transform scale-95 transition-all duration-300" id="modal-content">
+ <div class="flex justify-between items-start p-6 md:p-8 border-b border-slate-100 bg-white ">
+ <div class="flex items-center gap-4">
+ <div class="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center border border-slate-100 ">
+ <span class="material-symbols-outlined">business_center</span>
+ </div>
+ <div>
+ <h2 class="text-xl font-bold text-slate-800 " id="det-name">Memuat Data...</h2>
+ <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5 font-medium">
+ <span class="material-symbols-outlined text-sm">person</span> PIC: <span id="det-pic" class="font-semibold text-slate-700 ">Loading...</span>
+ </p>
+ </div>
+ </div>
+ <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-2 rounded-full transition-colors -mr-2 -mt-2">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ </div>
+ <div class="p-6 md:p-8 bg-slate-50 grid grid-cols-1 md:grid-cols-2 gap-6">
+ <div>
+ <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Layanan Ekstra (Add-On)</h3>
+ <div class="bg-white border border-slate-200 rounded-2xl p-5 text-sm font-medium text-slate-600 min-h-[120px] shadow-sm leading-relaxed" id="det-addons"></div>
+ </div>
+ <div>
+ <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Infrastruktur Terdokumentasi</h3>
+ <div class="bg-white border border-slate-200 rounded-2xl p-4 h-[120px] overflow-y-auto custom-scrollbar shadow-sm" id="det-assets"></div>
+ </div>
+ </div>
+ <div class="px-6 py-4 md:px-8 border-t border-slate-100 bg-white flex justify-end">
+ <button onclick="closeModal()" class="px-6 py-2.5 text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 :bg-slate-800 rounded-xl transition-all shadow-sm">Tutup Rincian</button>
+ </div>
+ </div>
+ </div>
 
-  <div id="modal-edit-klien" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] hidden pointer-events-none items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-    <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 overflow-hidden p-6 md:p-8 transform scale-95 transition-all duration-300 max-h-[95vh] overflow-y-auto custom-scrollbar" id="modal-edit-content">
-        <div class="flex justify-between items-start mb-6 border-b border-slate-100 pb-5">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center border border-amber-100/50">
-                    <span class="material-symbols-outlined">edit_document</span>
-                </div>
-                <div>
-                    <h2 class="text-xl font-bold text-slate-800">Perbarui Profil Entitas</h2>
-                    <p class="text-xs text-slate-500 font-medium mt-0.5">Edit detail informasi kemitraan klien</p>
-                </div>
-            </div>
-            <button type="button" onclick="closeEditModal()" class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-2 rounded-full transition-colors -mr-2">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-        </div>
-        <form id="form-edit-client" class="space-y-5">
-            <input type="hidden" id="edit-id">
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1.5">Nomenklatur Perusahaan</label>
-                <input type="text" id="edit-name" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400">
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Representatif Klien (PIC)</label>
-                    <input type="text" id="edit-pic" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">No. Kontak (WhatsApp)</label>
-                    <input type="text" id="edit-phone" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400">
-                </div>
-            </div>
-            <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/60 space-y-4">
-                <p class="text-xs font-bold text-slate-800 uppercase tracking-wide">Parameter Kontrak & Kuota</p>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1.5">Paket Layanan</label>
-                        <input type="text" id="edit-package" required class="w-full p-2.5 rounded-lg border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 text-sm transition-all outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1.5">Alokasi Kuota</label>
-                        <input type="number" id="edit-quota" required class="w-full p-2.5 rounded-lg border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 text-sm transition-all outline-none">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1.5">Tanggal Akhir Kontrak</label>
-                    <input type="date" id="edit-contract" required class="w-full p-2.5 rounded-lg border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 text-sm transition-all outline-none text-slate-600">
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Layanan Tambahan</label>
-                    <textarea id="edit-addons" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm h-24 resize-none transition-all duration-200"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Daftar Aset (Pisahkan koma)</label>
-                    <textarea id="edit-assets" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm h-24 resize-none transition-all duration-200"></textarea>
-                </div>
-            </div>
-            <div class="pt-6 flex gap-4 border-t border-slate-100 mt-6">
-                <button type="button" onclick="closeEditModal()" class="flex-1 py-3 bg-white border border-slate-200 text-slate-700 font-semibold text-sm rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-colors">Batalkan</button>
-                <button type="submit" class="flex-1 py-3 bg-galasus-blue text-white font-semibold text-sm rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200">Simpan Rekonsiliasi</button>
-            </div>
-        </form>
-    </div>
-  </div>
+ <div id="modal-tambah-klien" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] hidden pointer-events-none items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+ <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 overflow-hidden p-6 md:p-8 transform scale-95 transition-all duration-300 max-h-[95vh] overflow-y-auto custom-scrollbar" id="modal-add-content">
+ <div class="flex justify-between items-start mb-6 border-b border-slate-100 pb-5">
+ <div class="flex items-center gap-4">
+ <div class="w-12 h-12 rounded-2xl bg-blue-50 text-galasus-blue flex items-center justify-center border border-blue-100/50">
+ <span class="material-symbols-outlined">domain_add</span>
+ </div>
+ <div>
+ <h2 class="text-xl font-bold text-slate-800 ">Registrasi Entitas Baru</h2>
+ <p class="text-xs text-slate-500 font-medium mt-0.5">Lengkapi form untuk mendaftarkan klien baru</p>
+ </div>
+ </div>
+ <button type="button" onclick="closeAddModal()" class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-2 rounded-full transition-colors -mr-2">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ </div>
+ <form id="form-add-client" class="space-y-5">
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">Nomenklatur Perusahaan</label>
+ <input type="text" id="add-name" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400" placeholder="Contoh: PT. Solusi Digital">
+ </div>
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">Representatif Klien (PIC)</label>
+ <input type="text" id="add-pic" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400" placeholder="Nama lengkap PIC">
+ </div>
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">No. Kontak (WhatsApp)</label>
+ <input type="text" id="add-phone" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400" placeholder="08123456789">
+ </div>
+ </div>
+ <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+ <p class="text-xs font-bold text-slate-800 uppercase tracking-wide">Parameter Kontrak & Kuota</p>
+ <div class="grid grid-cols-2 gap-4">
+ <div>
+ <label class="block text-xs font-medium text-slate-600 mb-1.5">Paket Layanan</label>
+ <input type="text" id="add-package" required class="w-full p-2.5 rounded-lg border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 text-sm transition-all outline-none" placeholder="10 Tiket/Bln">
+ </div>
+ <div>
+ <label class="block text-xs font-medium text-slate-600 mb-1.5">Alokasi Kuota</label>
+ <input type="number" id="add-quota" required class="w-full p-2.5 rounded-lg border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 text-sm transition-all outline-none" placeholder="10">
+ </div>
+ </div>
+ <div>
+ <label class="block text-xs font-medium text-slate-600 mb-1.5">Tanggal Akhir Kontrak</label>
+ <input type="date" id="add-contract" required class="w-full p-2.5 rounded-lg border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 text-sm transition-all outline-none text-slate-600 ">
+ </div>
+ </div>
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">Layanan Tambahan</label>
+ <textarea id="add-addons" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm h-24 resize-none transition-all duration-200 placeholder:text-slate-400" placeholder="Detail add-on (opsional)"></textarea>
+ </div>
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">Manajemen Aset</label>
+ <textarea id="add-assets" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm h-24 resize-none transition-all duration-200 placeholder:text-slate-400" placeholder="Contoh: Server A, Router B"></textarea>
+ </div>
+ </div>
+ <div class="pt-6 flex gap-4 border-t border-slate-100 mt-6">
+ <button type="button" onclick="closeAddModal()" class="flex-1 py-3 bg-white border border-slate-200 text-slate-700 font-semibold text-sm rounded-xl hover:bg-slate-50 :bg-slate-800 hover:text-slate-900 transition-colors">Batalkan</button>
+ <button type="submit" class="flex-1 py-3 bg-galasus-blue text-white font-semibold text-sm rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200">Eksekusi Registrasi</button>
+ </div>
+ </form>
+ </div>
+ </div>
 
-  <div id="modal-report" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] hidden pointer-events-none items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-    <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl border border-slate-100 overflow-hidden p-6 md:p-8 transform scale-95 transition-all duration-300" id="modal-report-content">
-        <div class="flex justify-between items-start mb-6 border-b border-slate-100 pb-5">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-galasus-blue flex items-center justify-center border border-blue-100/50">
-                    <span class="material-symbols-outlined">picture_as_pdf</span>
-                </div>
-                <div>
-                    <h2 class="text-xl font-bold text-slate-800">Cetak Laporan</h2>
-                    <p class="text-xs text-slate-500 font-medium mt-0.5">Pilih periode pemakaian kuota tiket</p>
-                </div>
-            </div>
-            <button type="button" onclick="closeReportModal()" class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-2 rounded-full transition-colors -mr-2">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-        </div>
-        <form id="form-report" class="space-y-5">
-            <input type="hidden" id="report-client-id">
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1.5">Bulan</label>
-                <select id="report-month" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200">
-                    <option value="1">Januari</option>
-                    <option value="2">Februari</option>
-                    <option value="3">Maret</option>
-                    <option value="4">April</option>
-                    <option value="5">Mei</option>
-                    <option value="6">Juni</option>
-                    <option value="7">Juli</option>
-                    <option value="8">Agustus</option>
-                    <option value="9">September</option>
-                    <option value="10">Oktober</option>
-                    <option value="11">November</option>
-                    <option value="12">Desember</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1.5">Tahun</label>
-                <input type="number" id="report-year" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400">
-            </div>
-            <div class="pt-4 flex gap-4 border-t border-slate-100 mt-4">
-                <button type="submit" class="flex-1 py-3 bg-galasus-blue text-white font-semibold text-sm rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200 flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-sm">download</span> Ekspor PDF
-                </button>
-            </div>
-        </form>
-    </div>
-  </div>
+ <div id="modal-edit-klien" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] hidden pointer-events-none items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+ <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 overflow-hidden p-6 md:p-8 transform scale-95 transition-all duration-300 max-h-[95vh] overflow-y-auto custom-scrollbar" id="modal-edit-content">
+ <div class="flex justify-between items-start mb-6 border-b border-slate-100 pb-5">
+ <div class="flex items-center gap-4">
+ <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center border border-amber-100/50">
+ <span class="material-symbols-outlined">edit_document</span>
+ </div>
+ <div>
+ <h2 class="text-xl font-bold text-slate-800 ">Perbarui Profil Entitas</h2>
+ <p class="text-xs text-slate-500 font-medium mt-0.5">Edit detail informasi kemitraan klien</p>
+ </div>
+ </div>
+ <button type="button" onclick="closeEditModal()" class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-2 rounded-full transition-colors -mr-2">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ </div>
+ <form id="form-edit-client" class="space-y-5">
+ <input type="hidden" id="edit-id">
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">Nomenklatur Perusahaan</label>
+ <input type="text" id="edit-name" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400">
+ </div>
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">Representatif Klien (PIC)</label>
+ <input type="text" id="edit-pic" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400">
+ </div>
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">No. Kontak (WhatsApp)</label>
+ <input type="text" id="edit-phone" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400">
+ </div>
+ </div>
+ <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+ <p class="text-xs font-bold text-slate-800 uppercase tracking-wide">Parameter Kontrak & Kuota</p>
+ <div class="grid grid-cols-2 gap-4">
+ <div>
+ <label class="block text-xs font-medium text-slate-600 mb-1.5">Paket Layanan</label>
+ <input type="text" id="edit-package" required class="w-full p-2.5 rounded-lg border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 text-sm transition-all outline-none">
+ </div>
+ <div>
+ <label class="block text-xs font-medium text-slate-600 mb-1.5">Alokasi Kuota</label>
+ <input type="number" id="edit-quota" required class="w-full p-2.5 rounded-lg border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 text-sm transition-all outline-none">
+ </div>
+ </div>
+ <div>
+ <label class="block text-xs font-medium text-slate-600 mb-1.5">Tanggal Akhir Kontrak</label>
+ <input type="date" id="edit-contract" required class="w-full p-2.5 rounded-lg border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 text-sm transition-all outline-none text-slate-600 ">
+ </div>
+ </div>
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">Layanan Tambahan</label>
+ <textarea id="edit-addons" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm h-24 resize-none transition-all duration-200"></textarea>
+ </div>
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">Daftar Aset (Pisahkan koma)</label>
+ <textarea id="edit-assets" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm h-24 resize-none transition-all duration-200"></textarea>
+ </div>
+ </div>
+ <div class="pt-6 flex gap-4 border-t border-slate-100 mt-6">
+ <button type="button" onclick="closeEditModal()" class="flex-1 py-3 bg-white border border-slate-200 text-slate-700 font-semibold text-sm rounded-xl hover:bg-slate-50 :bg-slate-800 hover:text-slate-900 transition-colors">Batalkan</button>
+ <button type="submit" class="flex-1 py-3 bg-galasus-blue text-white font-semibold text-sm rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200">Simpan Rekonsiliasi</button>
+ </div>
+ </form>
+ </div>
+ </div>
 
-  <script src="/public/js/dialog.js?v=1"></script>
-  <script src="/public/js/auth.js?v=1"></script>
-  <script src="/public/js/client.js?v=2"></script>
+ <div id="modal-report" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] hidden pointer-events-none items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+ <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl border border-slate-100 overflow-hidden p-6 md:p-8 transform scale-95 transition-all duration-300" id="modal-report-content">
+ <div class="flex justify-between items-start mb-6 border-b border-slate-100 pb-5">
+ <div class="flex items-center gap-4">
+ <div class="w-12 h-12 rounded-2xl bg-blue-50 text-galasus-blue flex items-center justify-center border border-blue-100/50">
+ <span class="material-symbols-outlined">picture_as_pdf</span>
+ </div>
+ <div>
+ <h2 class="text-xl font-bold text-slate-800 ">Cetak Laporan</h2>
+ <p class="text-xs text-slate-500 font-medium mt-0.5">Pilih periode pemakaian kuota tiket</p>
+ </div>
+ </div>
+ <button type="button" onclick="closeReportModal()" class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-2 rounded-full transition-colors -mr-2">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ </div>
+ <form id="form-report" class="space-y-5">
+ <input type="hidden" id="report-client-id">
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">Bulan</label>
+ <select id="report-month" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200">
+ <option value="1">Januari</option>
+ <option value="2">Februari</option>
+ <option value="3">Maret</option>
+ <option value="4">April</option>
+ <option value="5">Mei</option>
+ <option value="6">Juni</option>
+ <option value="7">Juli</option>
+ <option value="8">Agustus</option>
+ <option value="9">September</option>
+ <option value="10">Oktober</option>
+ <option value="11">November</option>
+ <option value="12">Desember</option>
+ </select>
+ </div>
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">Tahun</label>
+ <input type="number" id="report-year" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400">
+ </div>
+ <div class="pt-4 flex gap-4 border-t border-slate-100 mt-4">
+ <button type="submit" class="flex-1 py-3 bg-galasus-blue text-white font-semibold text-sm rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200 flex items-center justify-center gap-2">
+ <span class="material-symbols-outlined text-sm">download</span> Ekspor PDF
+ </button>
+ </div>
+ </form>
+ </div>
+ </div>
+
+ <script src="/public/js/dialog.js?v=1"></script>
+ <script src="/public/js/auth.js?v=1"></script>
+ <script src="/public/js/client.js?v=2"></script>
+ 
 </body>
 </html>

@@ -157,10 +157,12 @@ function updateStats() {
     const incEl = document.getElementById('stat-income');
     const penEl = document.getElementById('stat-pending');
     const expEl = document.getElementById('stat-expenses');
+    const netEl = document.getElementById('stat-net-profit');
     
     if(incEl) incEl.textContent = formatIDR(income);
     if(penEl) penEl.textContent = formatIDR(pending);
     if(expEl) expEl.textContent = formatIDR(expenses);
+    if(netEl) netEl.textContent = formatIDR(income - expenses);
     
     // Data Dinamis: Hitung Klien Aktif
     const contEl = document.getElementById('stat-contracts');
@@ -229,34 +231,62 @@ window.executePayment = async function(id) {
 function checkNotifications() {
     notifications = [];
     const today = new Date();
-    const threeDaysLater = new Date();
-    threeDaysLater.setDate(today.getDate() + 3);
 
     allTransactions.forEach(t => {
         const dueDate = new Date(t.due_date);
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const twoDaysLater = new Date(today);
+        twoDaysLater.setDate(today.getDate() + 2);
+        
         const typeLower = (t.type || '').toLowerCase();
         const statusLower = (t.status || '').toLowerCase();
         const invoiceNo = (t.invoice_no || '').toUpperCase();
         
         let isIncome = typeLower === 'keluar' || typeLower === 'income';
-        if (!isIncome && invoiceNo.startsWith('INV')) isIncome = true;
+        let isExpense = typeLower === 'masuk' || typeLower === 'expense';
+        
+        if (!isIncome && !isExpense) {
+            if (invoiceNo.startsWith('INV')) isIncome = true;
+            else if (invoiceNo.startsWith('EXP')) isExpense = true;
+        }
         
         const isLunas = statusLower === 'lunas' || statusLower === 'paid' || statusLower === 'success';
 
-        if (isIncome && !isLunas && dueDate <= threeDaysLater && dueDate >= today) {
-            notifications.push({
-                title: "Teguran Batas Waktu Piutang",
-                desc: `Dokumen penagihan ${t.invoice_no} (${t.client_vendor}) membutuhkan eskalasi pembayaran dalam kurun waktu 3 hari kalender.`,
-                type: 'urgent'
-            });
+        if (!isLunas && dueDate <= twoDaysLater && dueDate >= today) {
+            if (isIncome) {
+                notifications.push({
+                    title: "PENGINGAT PEMBAYARAN CLIENT",
+                    desc: `Invoice ${t.invoice_no} untuk ${t.client_vendor} akan segera jatuh tempo. Harap segera follow-up ke client.`,
+                    type: 'urgent'
+                });
+            } else if (isExpense) {
+                notifications.push({
+                    title: "PENGINGAT JATUH TEMPO HUTANG",
+                    desc: `Pembayaran tagihan ${t.invoice_no} kepada ${t.client_vendor} akan segera jatuh tempo. Mohon siapkan dana pelunasan.`,
+                    type: 'warning'
+                });
+            }
         }
     });
 
     allProjections.forEach(p => {
-        if (new Date(p.due_date) < today) {
+        const projDate = new Date(p.due_date);
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const twoDaysLater = new Date(today);
+        twoDaysLater.setDate(today.getDate() + 2);
+
+        if (projDate < today) {
             notifications.push({
-                title: "Keterlambatan Eksekusi Anggaran",
-                desc: `Alokasi beban untuk ${p.title} telah melampaui tenggat waktu yang dijadwalkan. Mohon segera lakukan rekonsiliasi.`,
+                title: "KETERLAMBATAN EKSEKUSI ANGGARAN",
+                desc: `Alokasi beban untuk ${p.title} telah melampaui tenggat waktu yang dijadwalkan. Mohon segera eksekusi pelunasan.`,
+                type: 'urgent'
+            });
+        } else if (projDate <= twoDaysLater) {
+            notifications.push({
+                title: "PENGINGAT ANGGARAN MENDATANG",
+                desc: `Jadwal alokasi anggaran untuk ${p.title} akan tiba dalam waktu dekat.`,
                 type: 'warning'
             });
         }
@@ -328,7 +358,7 @@ function renderTable(data) {
             else if (invoiceNo.startsWith('EXP')) isMasuk = true;
         }
 
-        const typeIndicator = isMasuk ? `<span class="inline-flex mt-1 px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-slate-100 text-slate-500 border border-slate-200">Beban Usaha</span>` : `<span class="inline-flex mt-1 px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-emerald-50 text-emerald-600 border border-emerald-100">Tagihan Klien</span>`;
+        const typeIndicator = isMasuk ? `<span class="inline-flex mt-1 px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-slate-100 text-slate-500 border border-slate-200 whitespace-nowrap">Beban Operasional</span>` : `<span class="inline-flex mt-1 px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-emerald-50 text-emerald-600 border border-emerald-100 whitespace-nowrap">Tagihan Klien</span>`;
         
         const isLunas = statusLower === 'lunas' || statusLower === 'paid' || statusLower === 'success';
         const statusClass = isLunas ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-amber-100 text-amber-700 border border-amber-200';
@@ -339,18 +369,18 @@ function renderTable(data) {
 
         tbody.insertAdjacentHTML('beforeend', `
             <tr class="hover:bg-slate-50/70 transition-colors border-b border-slate-50">
-                <td class="px-4 py-4 font-bold text-slate-700 text-xs tracking-wide">${t.invoice_no}</td>
-                <td class="px-4 py-4">
+                <td class="px-3 py-3 font-bold text-slate-700 text-xs tracking-wide">${t.invoice_no}</td>
+                <td class="px-3 py-3">
                     <div class="flex items-center gap-2">
-                        <div class="text-xs font-bold text-slate-900">${t.client_vendor}</div>
+                        <div class="text-xs font-bold text-slate-900 truncate max-w-[120px]" title="${t.client_vendor}">${t.client_vendor}</div>
                         ${typeIndicator}
                     </div>
                     <div class="text-[10px] text-slate-400 truncate max-w-[150px] mt-0.5" title="${t.description || '-'}">${t.description || '-'}</div>
                 </td>
-                <td class="px-4 py-4 text-[11px] font-medium text-slate-500 whitespace-nowrap">${new Date(t.issue_date).toLocaleDateString('id-ID', {day: '2-digit', month:'short', year:'numeric'})}</td>
-                <td class="px-4 py-4 text-xs font-black whitespace-nowrap ${isKeluar ? 'text-slate-900' : 'text-error'}">${formatIDR(t.amount)}</td>
-                <td class="px-4 py-4 text-center"><span class="px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-wider ${statusClass}">${t.status}</span></td>
-                <td class="px-4 py-4 text-right flex justify-end gap-1.5 whitespace-nowrap">
+                <td class="px-3 py-3 text-[11px] font-medium text-slate-500 whitespace-nowrap">${new Date(t.due_date).toLocaleDateString('id-ID', {day: '2-digit', month:'short', year:'numeric'})}</td>
+                <td class="px-3 py-3 text-xs font-black whitespace-nowrap ${isKeluar ? 'text-slate-900' : 'text-error'}">${formatIDR(t.amount)}</td>
+                <td class="px-3 py-3 text-center"><span class="px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-wider ${statusClass}">${t.status}</span></td>
+                <td class="px-3 py-3 text-right flex justify-end gap-1.5 whitespace-nowrap">
                     ${actionButton}
                     <button onclick="exportSinglePDF(${t.transaction_id})" title="Cetak Dokumen Administratif" class="p-1.5 text-slate-400 hover:text-galasus-blue hover:bg-blue-50 rounded-lg border border-transparent hover:border-blue-200 transition-colors">
                         <span class="material-symbols-outlined text-lg">picture_as_pdf</span>
@@ -438,10 +468,21 @@ async function exportFullPDF() {
     doc.setFont("helvetica", "bold");
     doc.setTextColor(30, 30, 30);
     doc.text("REKAPITULASI BUKU BESAR TRANSAKSI", 14, 50);
-    const body = allTransactions.map(t => [t.invoice_no, t.client_vendor, t.description || "-", new Date(t.issue_date).toLocaleDateString('id-ID'), formatIDR(t.amount), t.status.toUpperCase()]);
+    const body = allTransactions.map(t => {
+        const typeLower = (t.type || '').toLowerCase();
+        const invoiceNo = (t.invoice_no || '').toUpperCase();
+        let isKeluar = typeLower === 'keluar' || typeLower === 'income';
+        let isMasuk = typeLower === 'masuk' || typeLower === 'expense';
+        if (!isKeluar && !isMasuk) {
+            if (invoiceNo.startsWith('INV')) isKeluar = true;
+            else if (invoiceNo.startsWith('EXP')) isMasuk = true;
+        }
+        const kategori = isMasuk ? 'Beban Operasional' : 'Piutang Usaha';
+        return [t.invoice_no, kategori, t.client_vendor, t.description || "-", new Date(t.due_date).toLocaleDateString('id-ID'), formatIDR(t.amount), t.status.toUpperCase()];
+    });
     doc.autoTable({ 
         startY: 55, 
-        head: [['REFERENSI', 'ENTITAS MITRA', 'URAIAN', 'TGL TERBIT', 'NOMINAL (IDR)', 'STATUS']], 
+        head: [['REFERENSI', 'KATEGORI', 'ENTITAS MITRA', 'URAIAN', 'TGL JATUH TEMPO', 'NOMINAL (IDR)', 'STATUS']], 
         body: body, 
         theme: 'grid', 
         headStyles: { fillColor: [2, 116, 190], fontSize: 8, fontStyle: 'bold' }, 
@@ -638,7 +679,7 @@ window.openTransactionForm = function(type) {
     if(fieldType) fieldType.value = type;
     
     if(headerBg && title && subtitle) {
-        if(type === 'Keluar') {
+        if(type === 'Keluar' || type === 'Income') {
             headerBg.className = 'w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 transition-colors';
             title.textContent = 'Penerbitan Faktur';
             subtitle.textContent = 'Penagihan kepada klien';
@@ -657,15 +698,29 @@ document.addEventListener('DOMContentLoaded', () => {
     setupUI();
     loadFinanceData();
 
-    const btnNotif = document.getElementById('btn-notification');
-    const dropNotif = document.getElementById('dropdown-notif');
+    const btnNotif = document.getElementById('btn-notif');
+    const dropNotif = document.getElementById('notif-popover');
     if(btnNotif && dropNotif) {
         btnNotif.onclick = (e) => {
             e.stopPropagation();
-            dropNotif.classList.toggle('hidden');
+            const isHidden = dropNotif.classList.contains('opacity-0');
+            if (isHidden) {
+                dropNotif.classList.remove('opacity-0', 'invisible', 'scale-95');
+                dropNotif.classList.add('opacity-100', 'visible', 'scale-100');
+            } else {
+                dropNotif.classList.add('opacity-0', 'invisible', 'scale-95');
+                dropNotif.classList.remove('opacity-100', 'visible', 'scale-100');
+            }
         };
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!dropNotif.contains(e.target) && !btnNotif.contains(e.target)) {
+                dropNotif.classList.add('opacity-0', 'invisible', 'scale-95');
+                dropNotif.classList.remove('opacity-100', 'visible', 'scale-100');
+            }
+        });
     }
-    window.onclick = () => { if(dropNotif) dropNotif.classList.add('hidden'); };
 
     // Handler Search untuk 2 bar pencarian (Desktop & Mobile)
     const searchDesktop = document.getElementById('search-finance');

@@ -15,7 +15,9 @@ import (
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"gorm.io/driver/sqlserver"
+	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/time/rate"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -81,6 +83,17 @@ type TicketLog struct {
 	CreatedAt   time.Time `gorm:"column:created_at;autoCreateTime" json:"created_at"`
 }
 
+type SystemLog struct {
+	LogID       int       `gorm:"primaryKey;column:log_id;autoIncrement" json:"log_id"`
+	UserID      int       `gorm:"column:user_id;index" json:"user_id"`
+	UserName    string    `gorm:"column:user_name" json:"user_name"`
+	Role        string    `gorm:"column:role" json:"role"`
+	Module      string    `gorm:"column:module" json:"module"`
+	Action      string    `gorm:"column:action" json:"action"`
+	Description string    `gorm:"column:description" json:"description"`
+	CreatedAt   time.Time `gorm:"column:created_at;autoCreateTime" json:"created_at"`
+}
+
 type Notification struct {
 	ID        int       `gorm:"primaryKey;column:id;autoIncrement" json:"id"`
 	UserID    int       `gorm:"column:user_id;index" json:"user_id"`
@@ -118,29 +131,60 @@ type LoginRequest struct {
 }
 
 func main() {
-	// [MAINTENANCE] Konfigurasi koneksi ke SQL Server.
-	// Jika berpindah ke VPS atau Production, ubah DSN ini dan pastikan port 1433 terbuka.
-	// Jika menggunakan MariaDB, ganti driver ke gorm.io/driver/mysql.
-	dsn := "sqlserver://sa:heliocaesar@localhost:1433?database=Galasusdb"
-	db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
+	// [MAINTENANCE] Konfigurasi koneksi ke Database (Berpindah ke MariaDB/MySQL untuk VPS)
+	dsn := "galasus:RahasiaGalasus2026!@tcp(127.0.0.1:3306)/galasusdb?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Gagal konek database: ", err)
 	}
 
 	os.MkdirAll("public/uploads", os.ModePerm)
 
-	db.AutoMigrate(&TicketLog{})
+	db.AutoMigrate(&TicketLog{}, &SystemLog{})
 	db.AutoMigrate(&Notification{})
 	db.AutoMigrate(&User{}, &Transaction{}, &Projection{}, &Ticket{}, &Client{})
-	fmt.Println("Database Galasusdb Siap Tempur, Pak PM!")
+
+	// AUTO SEEDER: Buat akun Super Admin default jika tabel users masih kosong
+	var userCount int64
+	db.Model(&User{}).Count(&userCount)
+	if userCount == 0 {
+		hashedBytes, _ := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
+		defaultAdmin := User{
+			FullName: "Super Administrator",
+			Email:    "admin@galasus.com",
+			Password: string(hashedBytes), // Bcrypt hashed password
+			Role:     "super admin",
+			Status:   "active",
+		}
+		db.Create(&defaultAdmin)
+		fmt.Println("==========================================================")
+		fmt.Println("🚀 AUTO-SEEDER: Akun God Mode berhasil diciptakan!")
+		fmt.Println("📧 Email: admin@galasus.com")
+		fmt.Println("🔑 Password: admin")
+		fmt.Println("==========================================================")
+	}
+	fmt.Println("Database Galasusdb Siap.")
 
 	e := echo.New()
 	e.Use(middleware.Recover())
+	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(20)))) // 20 requests per second limit
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 	}))
+
+	logSystemActivity := func(userID int, userName, role, module, action, desc string) {
+		logEntry := SystemLog{
+			UserID:      userID,
+			UserName:    userName,
+			Role:        role,
+			Module:      module,
+			Action:      action,
+			Description: desc,
+		}
+		db.Create(&logEntry)
+	}
 
 	e.Static("/public", "public")
 	e.Static("/assets", "assets")
@@ -190,7 +234,7 @@ func main() {
 		if err := db.Where("email = ?", req.Email).First(&user).Error; err != nil {
 			return c.JSON(401, map[string]string{"message": "Kredensial tidak ditemukan"})
 		}
-		if user.Password != req.Password {
+		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
 			return c.JSON(401, map[string]string{"message": "Kredensial tidak valid"})
 		}
 		if user.Status == "suspended" {
@@ -206,10 +250,13 @@ func main() {
 			},
 		}
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-		t, _ := token.SignedString([]byte("RAHASIA_DAPUR_GALASUS_2026"))
+		t, err := token.SignedString([]byte("RAHASIA_DAPUR_GALASUS_2026"))
+		if err != nil {
+			return c.JSON(500, map[string]string{"message": "Gagal menghasilkan token"})
+		}
 
-		now := time.Now().UTC()
-		db.Model(&user).Update("last_active", now)
+		// LOG ACTIVITY: Login Success
+		logSystemActivity(user.UserID, user.FullName, user.Role, "System", "Login", "Berhasil login ke dalam sistem")
 
 		return c.JSON(200, map[string]interface{}{
 			"token":          t,
@@ -231,8 +278,10 @@ func main() {
 			return c.JSON(400, map[string]string{"message": "Kata sandi baru tidak valid"})
 		}
 
+		hashedBytes, _ := bcrypt.GenerateFromPassword([]byte(input.NewPassword), bcrypt.DefaultCost)
+
 		if err := db.Model(&User{}).Where("user_id = ?", userID).Updates(map[string]interface{}{
-			"password":       input.NewPassword,
+			"password":       string(hashedBytes),
 			"is_first_login": false,
 		}).Error; err != nil {
 			return c.JSON(500, map[string]string{"message": "Gagal menyimpan kata sandi baru"})
@@ -249,6 +298,28 @@ func main() {
 	// GROUP: ADMIN SISTEM & MANAJEMEN PENGGUNA
 	// ==========================================
 	adminGroup := e.Group("", echojwt.WithConfig(jwtConfig), satpamMiddleware)
+	adminGroup.GET("/audit-logs", func(c echo.Context) error {
+		var logs []SystemLog
+		query := db.Order("created_at desc")
+		
+		startDateStr := c.QueryParam("start_date")
+		endDateStr := c.QueryParam("end_date")
+		
+		if startDateStr != "" && endDateStr != "" {
+			startDate, err1 := time.Parse("2006-01-02", startDateStr)
+			endDate, err2 := time.Parse("2006-01-02", endDateStr)
+			if err1 == nil && err2 == nil {
+				endDate = endDate.Add(24 * time.Hour) // Include entire end date
+				query = query.Where("created_at >= ? AND created_at < ?", startDate, endDate)
+			}
+		} else {
+			query = query.Limit(100)
+		}
+
+		query.Find(&logs)
+		return c.JSON(200, logs)
+	})
+
 	adminGroup.GET("/users", func(c echo.Context) error {
 		var users []User
 		db.Find(&users)
@@ -262,10 +333,20 @@ func main() {
 			return c.JSON(400, map[string]string{"message": "Hanya email dengan domain @galasus.com yang diizinkan!"})
 		}
 
-		req.Password = "Galasus123!"
+		hashedBytes, _ := bcrypt.GenerateFromPassword([]byte("Galasus123!"), bcrypt.DefaultCost)
+		req.Password = string(hashedBytes)
 		req.Status = "active"
 		req.IsFirstLogin = true
 		db.Create(&req)
+
+		// LOG ACTIVITY
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		creatorID := int(claims["user_id"].(float64))
+		creatorName := claims["name"].(string)
+		creatorRole := claims["role"].(string)
+		logSystemActivity(creatorID, creatorName, creatorRole, "User Management", "Create User", fmt.Sprintf("Mendaftarkan pengguna baru: %s (%s)", req.FullName, req.Role))
+
 		return c.JSON(201, req)
 	})
 
@@ -316,7 +397,7 @@ func main() {
 		db.Model(&Client{}).Where("status = ?", "active").Count(&totalClients)
 		db.Model(&Ticket{}).Where("status != ?", "closed").Count(&totalTickets)
 		db.Model(&Transaction{}).Where("invoice_no LIKE 'INV/%'").Select("COALESCE(SUM(amount), 0)").Row().Scan(&totalRevenue)
-		db.Model(&Ticket{}).Where("status != 'closed' AND sla_target < ?", time.Now()).Count(&criticalIncidents)
+		db.Model(&Ticket{}).Where("status NOT IN ('closed', 'resolved', 'success') AND (sla_target < ? OR priority = 'Kritis' OR priority = 'kritis')", time.Now().UTC()).Count(&criticalIncidents)
 
 		var recentClients []Client
 		db.Limit(5).Order("client_id desc").Find(&recentClients)
@@ -334,8 +415,9 @@ func main() {
 
 	adminGroup.PUT("/users/:id/reset-password", func(c echo.Context) error {
 		id := c.Param("id")
+		hashedBytes, _ := bcrypt.GenerateFromPassword([]byte("Galasus123!"), bcrypt.DefaultCost)
 		if err := db.Model(&User{}).Where("user_id = ?", id).Updates(map[string]interface{}{
-			"password":       "Galasus123!",
+			"password":       string(hashedBytes),
 			"is_first_login": true,
 		}).Error; err != nil {
 			return c.JSON(500, map[string]string{"message": "Gagal mengatur ulang kata sandi"})
@@ -389,7 +471,7 @@ func main() {
 		c.Bind(req)
 		var count int64
 		db.Model(&Transaction{}).Count(&count)
-		
+
 		prefix := "INV"
 		if req.Type == "Masuk" || req.Type == "Expense" {
 			prefix = "EXP"
@@ -397,6 +479,15 @@ func main() {
 		req.InvoiceNo = fmt.Sprintf("%s/%d/%03d", prefix, time.Now().Year(), count+1)
 		req.IssueDate = time.Now()
 		db.Create(&req)
+
+		// LOG ACTIVITY
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		creatorID := int(claims["user_id"].(float64))
+		creatorName := claims["name"].(string)
+		creatorRole := claims["role"].(string)
+		logSystemActivity(creatorID, creatorName, creatorRole, "Finance", "Create Transaction", fmt.Sprintf("Membuat transaksi: %s - %s", req.InvoiceNo, req.Description))
+
 		return c.JSON(201, req)
 	})
 	financeGroup.PUT("/transactions/:id", func(c echo.Context) error {
@@ -436,15 +527,18 @@ func main() {
 			return c.JSON(404, "Proyeksi anggaran tidak ditemukan")
 		}
 		trans := Transaction{
-			InvoiceNo:    fmt.Sprintf("EXP/%d/%d", time.Now().Year(), time.Now().Unix()%1000),
+			InvoiceNo:    fmt.Sprintf("EXP/%d/%d", time.Now().Year(), time.Now().Unix()),
 			Type:         "Expense",
 			ClientVendor: "Eksekusi Proyeksi",
 			Description:  p.Title,
 			Amount:       p.Amount,
 			IssueDate:    time.Now(),
+			DueDate:      p.DueDate,
 			Status:       "Lunas",
 		}
-		db.Create(&trans)
+		if err := db.Create(&trans).Error; err != nil {
+			return c.JSON(500, map[string]string{"message": "Gagal mencatat transaksi eksekusi"})
+		}
 		db.Delete(&p)
 		return c.JSON(200, map[string]string{"message": "Proyeksi berhasil dieksekusi menjadi pengeluaran"})
 	})
@@ -468,7 +562,6 @@ func main() {
 		}
 		return c.JSON(200, map[string]string{"message": "Proyeksi berhasil dihapus"})
 	})
-
 
 	// ==========================================
 	// GROUP: LAYANAN BANTUAN (SERVICE DESK)
@@ -499,7 +592,7 @@ func main() {
 		if t.CreatedAt.IsZero() {
 			t.CreatedAt = time.Now().UTC()
 		}
-		
+
 		var hours int
 		if _, err := fmt.Sscanf(t.SLA, "%d", &hours); err == nil && hours > 0 {
 			target := t.CreatedAt.Add(time.Duration(hours) * time.Hour)
@@ -524,6 +617,13 @@ func main() {
 			}
 		}
 
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		creatorID := int(claims["user_id"].(float64))
+		creatorName := claims["name"].(string)
+		creatorRole := claims["role"].(string)
+		logSystemActivity(creatorID, creatorName, creatorRole, "Ticket", "Create Ticket", fmt.Sprintf("Membuat tiket bantuan baru: %s", t.NoTiket))
+
 		return c.JSON(201, t)
 	})
 
@@ -532,7 +632,7 @@ func main() {
 		userToken := c.Get("user").(*jwt.Token)
 		claims := userToken.Claims.(jwt.MapClaims)
 		teknisiID := int(claims["user_id"].(float64))
-        teknisiName := claims["name"].(string)
+		teknisiName := claims["name"].(string)
 
 		var ticket Ticket
 		if err := db.First(&ticket, id).Error; err != nil {
@@ -543,8 +643,8 @@ func main() {
 		if err := db.Save(&ticket).Error; err != nil {
 			return c.JSON(500, map[string]string{"message": "Gagal mengalokasikan tiket"})
 		}
-        
-        db.Create(&TicketLog{
+
+		db.Create(&TicketLog{
 			TicketID:    ticket.ID,
 			UserID:      teknisiID,
 			UserName:    teknisiName,
@@ -552,7 +652,7 @@ func main() {
 			Description: "Tiket diambil alih dan mulai dikerjakan.",
 			CreatedAt:   time.Now(),
 		})
-        
+
 		return c.JSON(200, map[string]string{"message": "Tiket berhasil dialokasikan kepada Anda"})
 	})
 
@@ -762,6 +862,13 @@ func main() {
 			}
 		}
 
+		if ticket.FotoBefore != "" {
+			os.Remove(strings.TrimPrefix(ticket.FotoBefore, "/"))
+		}
+		if ticket.FotoAfter != "" {
+			os.Remove(strings.TrimPrefix(ticket.FotoAfter, "/"))
+		}
+
 		db.Delete(&ticket)
 		return c.JSON(200, map[string]string{"message": "Tiket berhasil dihapus dan kuota layanan dikembalikan"})
 	})
@@ -783,6 +890,14 @@ func main() {
 		if err := db.Create(&req).Error; err != nil {
 			return c.JSON(500, map[string]string{"message": err.Error()})
 		}
+
+		userToken := c.Get("user").(*jwt.Token)
+		claims := userToken.Claims.(jwt.MapClaims)
+		creatorID := int(claims["user_id"].(float64))
+		creatorName := claims["name"].(string)
+		creatorRole := claims["role"].(string)
+		logSystemActivity(creatorID, creatorName, creatorRole, "Client Management", "Create Client", fmt.Sprintf("Mendaftarkan klien baru: %s", req.Name))
+
 		return c.JSON(201, req)
 	})
 

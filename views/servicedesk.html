@@ -1,43 +1,45 @@
 <!DOCTYPE html>
 <html class="light" lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Galasus | Manajemen Layanan Bantuan</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "galasus-blue": "#0274BE",
-            "error": "#ba1a1a",
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    .glass-card {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(226, 232, 240, 0.5);
-      box-shadow: 0px 4px 20px rgba(15, 23, 42, 0.05);
-    }
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
-  </style>
+ <meta charset="utf-8" />
+ <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+ <title>Galasus | Manajemen Layanan Bantuan</title>
+ <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+ <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+ <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+ <script id="tailwind-config">
+ tailwind.config = {
+ darkMode: "class",
+ theme: {
+ extend: {
+ fontFamily: { sans: ["Plus Jakarta Sans", "sans-serif"] },
+ colors: {
+ "galasus-blue": "#0274BE",
+ "error": "#ba1a1a",
+ }
+ }
+ }
+ }
+ </script>
+ <style>
+ .glass-card {
+ background: rgba(255, 255, 255, 0.7);
+ backdrop-filter: blur(12px);
+ border: 1px solid rgba(226, 232, 240, 0.5);
+ box-shadow: 0px 4px 20px rgba(15, 23, 42, 0.05);
+ }
+ .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+ .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+ .custom-scrollbar::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
+ 
+ </style>
 
-    <link rel="icon" type="image/svg+xml" href="/public/photos/Logo-Galasus178x40.svg">
+ <link rel="icon" type="image/svg+xml" href="/public/photos/Logo-Galasus178x40.svg">
 </head>
 
-<body class="bg-slate-50 text-slate-800 min-h-screen flex overflow-hidden">
-  
-  <aside id="mobile-sidebar" class="transform -translate-x-full md:translate-x-0 transition-transform duration-300 fixed inset-y-0 left-0 w-64 bg-white/95 md:bg-white/80 backdrop-blur-xl border-r border-slate-200/50 flex flex-col p-4 gap-2 z-50 shadow-2xl md:shadow-none">
+<body class="font-sans antialiased bg-slate-50 text-slate-800 min-h-screen flex overflow-hidden">
+ 
+   <aside id="mobile-sidebar" class="transform -translate-x-full md:translate-x-0 transition-transform duration-300 fixed inset-y-0 left-0 w-64 bg-white/95 md:bg-white/80 backdrop-blur-xl border-r border-slate-200/50 flex flex-col p-4 gap-2 z-50 shadow-2xl md:shadow-none">
     
     <button id="close-sidebar-btn" class="md:hidden absolute top-4 right-4 text-slate-400 hover:text-error transition-colors">
         <span class="material-symbols-outlined">close</span>
@@ -55,7 +57,7 @@
         <span class="material-symbols-outlined">groups</span>
         <span>Manajemen Klien</span>
       </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 bg-galasus-blue text-white rounded-lg shadow-md font-semibold transition-all duration-300" href="#">
+      <a class="flex items-center gap-3 px-3 py-2.5 bg-galasus-blue text-white rounded-lg shadow-md font-semibold transition-all duration-300" href="/views/servicedesk.html">
         <span class="material-symbols-outlined">support_agent</span>
         <span>Layanan Bantuan</span>
       </a>
@@ -76,228 +78,229 @@
     </div>
   </aside>
 
-  <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
+ <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
-  <main class="flex-1 ml-0 md:ml-64 flex flex-col h-screen">
-    <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-sm px-4 md:px-8 py-3 md:py-4 flex justify-between items-center">
-      
-      <div class="flex items-center gap-2 md:gap-8 flex-1">
-        <button id="open-sidebar-btn" class="md:hidden text-slate-600 hover:text-galasus-blue p-2">
-            <span class="material-symbols-outlined">menu</span>
-        </button>
+ <main class="flex-1 ml-0 md:ml-64 flex flex-col h-screen">
+ <header class="sticky top-0 z-30 bg-white backdrop-blur-xl border-b border-slate-200 shadow-sm px-4 md:px-8 py-3 md:py-4 flex justify-between items-center">
+ 
+ <div class="flex items-center gap-2 md:gap-8 flex-1">
+ <button id="open-sidebar-btn" class="md:hidden text-slate-600 hover:text-galasus-blue p-2">
+ <span class="material-symbols-outlined">menu</span>
+ </button>
 
-        <div class="relative w-full max-w-lg hidden sm:block">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-          <input id="search-ticket" class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-1 focus:ring-galasus-blue outline-none transition-all shadow-sm" placeholder="Penelusuran ID Tiket, Klien, atau Kata Kunci Insiden..." type="text" />
-        </div>
-      </div>
-      
-      <div class="flex items-center gap-4 shrink-0">
-        <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
-        <div class="flex items-center gap-3">
-          <div class="text-right hidden md:block">
-            <p class="text-xs font-bold text-slate-800" id="user-name">Memuat...</p>
-            <p class="text-[10px] text-slate-500 uppercase tracking-wider font-semibold" id="user-role">Memuat...</p>
-          </div>
-          <div class="w-9 h-9 rounded-full bg-galasus-blue/10 flex items-center justify-center border border-galasus-blue/20">
-            <span class="text-galasus-blue font-bold text-sm" id="user-initials">??</span>
-          </div>
-        </div>
-      </div>
-    </header>
+ <div class="relative w-full max-w-lg hidden sm:block">
+ <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+ <input id="search-ticket" class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-1 focus:ring-galasus-blue outline-none transition-all shadow-sm" placeholder="Penelusuran ID Tiket, Klien, atau Kata Kunci Insiden..." type="text" />
+ </div>
+ </div>
+ 
+ <div class="flex items-center gap-4 shrink-0">
+ <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
+ <div class="flex items-center gap-3">
+ <div class="text-right hidden md:block">
+ <p class="text-xs font-bold text-slate-800 " id="user-name">Memuat...</p>
+ <p class="text-[10px] text-slate-500 uppercase tracking-wider font-semibold" id="user-role">Memuat...</p>
+ </div>
+ <div class="w-9 h-9 rounded-full bg-galasus-blue/10 flex items-center justify-center border border-galasus-blue/20">
+ <span class="text-galasus-blue font-bold text-sm" id="user-initials">??</span>
+ </div>
+ </div>
+ </div>
+ </header>
 
-    <div class="flex-1 p-4 md:p-8 overflow-y-auto custom-scrollbar">
-      
-      <div class="relative w-full sm:hidden mb-4">
-        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-        <input id="search-ticket-mobile" class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm focus:ring-1 focus:ring-galasus-blue outline-none transition-all shadow-sm" placeholder="Cari insiden atau klien..." type="text" />
-      </div>
+ <div class="flex-1 p-4 md:p-8 overflow-y-auto custom-scrollbar">
+ 
+ <div class="relative w-full sm:hidden mb-4">
+ <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+ <input id="search-ticket-mobile" class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm focus:ring-1 focus:ring-galasus-blue outline-none transition-all shadow-sm" placeholder="Cari insiden atau klien..." type="text" />
+ </div>
 
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 md:mb-8 gap-4 max-w-[1600px] mx-auto">
-        <div>
-          <h1 class="text-2xl md:text-3xl font-bold text-slate-900 mb-1 tracking-tight">Pusat Kendali Insiden</h1>
-          <p class="text-slate-500 text-xs md:text-sm">Otorisasi pengguna: <span id="welcome-name" class="font-bold text-galasus-blue">Admin</span>. Pemantauan tiket operasional real-time.</p>
+ <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 md:mb-8 gap-4 max-w-[1600px] mx-auto">
+ <div>
+ <h1 class="text-2xl md:text-3xl font-bold text-slate-900 mb-1 tracking-tight">Pusat Kendali Insiden</h1>
+ <p class="text-slate-500 text-xs md:text-sm">Otorisasi pengguna: <span id="welcome-name" class="font-bold text-galasus-blue">Admin</span>. Pemantauan tiket operasional real-time.</p>
+ </div>
+ <div class="flex items-center gap-2 md:gap-3 w-full sm:w-auto">
+ <a href="/views/ticketarchive.html" class="flex-1 sm:flex-none flex justify-center items-center gap-2 bg-white border border-slate-200 text-slate-600 px-4 md:px-5 py-2.5 rounded-lg font-bold shadow-sm hover:bg-slate-50 :bg-slate-800 transition-all active:scale-95 text-xs md:text-sm">
+ <span class="material-symbols-outlined text-sm">inventory_2</span>
+ <span class="hidden sm:inline">Direktori Arsip</span>
+ <span class="sm:hidden">Arsip</span>
+ </a>
+ <button id="btn-tambah-tiket" class="flex-1 sm:flex-none flex justify-center items-center gap-2 bg-galasus-blue text-white px-4 md:px-5 py-2.5 rounded-lg font-bold shadow-lg hover:bg-blue-700 transition-all active:scale-95 text-xs md:text-sm whitespace-nowrap">
+ <span class="material-symbols-outlined text-sm">add</span>
+ Registrasi Tiket
+ </button>
+ </div>
+ </div>
+ 
+ <div class="max-w-[1600px] mx-auto space-y-6 md:space-y-8">
+ 
+ <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div class="glass-card p-4 rounded-xl border-l-4 border-slate-300 min-w-0">
+            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-1 leading-tight truncate">Menunggu Alokasi</span>
+            <span id="stat-open" class="text-xl md:text-2xl font-black text-slate-900 truncate">0</span>
         </div>
-        <div class="flex items-center gap-2 md:gap-3 w-full sm:w-auto">
-            <a href="/views/ticketarchive.html" class="flex-1 sm:flex-none flex justify-center items-center gap-2 bg-white border border-slate-200 text-slate-600 px-4 md:px-5 py-2.5 rounded-lg font-bold shadow-sm hover:bg-slate-50 transition-all active:scale-95 text-xs md:text-sm">
-              <span class="material-symbols-outlined text-sm">inventory_2</span>
-              <span class="hidden sm:inline">Direktori Arsip</span>
-              <span class="sm:hidden">Arsip</span>
-            </a>
-            <button id="btn-tambah-tiket" class="flex-1 sm:flex-none flex justify-center items-center gap-2 bg-galasus-blue text-white px-4 md:px-5 py-2.5 rounded-lg font-bold shadow-lg hover:bg-blue-700 transition-all active:scale-95 text-xs md:text-sm whitespace-nowrap">
-              <span class="material-symbols-outlined text-sm">add</span>
-              Registrasi Tiket
-            </button>
+        <div class="glass-card p-4 rounded-xl border-l-4 border-blue-500 min-w-0">
+            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-1 leading-tight truncate">Dalam Penanganan</span>
+            <span id="stat-active" class="text-xl md:text-2xl font-black text-slate-900 truncate">0</span>
         </div>
-      </div>
-      
-      <div class="max-w-[1600px] mx-auto space-y-6 md:space-y-8">
-        
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          <div class="glass-card p-4 md:p-5 rounded-xl border-l-4 border-slate-300">
-            <span class="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1 leading-tight">Menunggu Alokasi</span>
-            <span id="stat-open" class="text-2xl md:text-3xl font-black text-slate-900">0</span>
-          </div>
-          <div class="glass-card p-4 md:p-5 rounded-xl border-l-4 border-blue-500">
-            <span class="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1 leading-tight">Dalam Penanganan</span>
-            <span id="stat-active" class="text-2xl md:text-3xl font-black text-slate-900">0</span>
-          </div>
-          <div class="glass-card p-4 md:p-5 rounded-xl border-l-4 border-error bg-error-container/10">
-            <span class="text-[9px] md:text-[10px] font-bold text-error uppercase tracking-widest block mb-1 leading-tight">Pelanggaran SLA</span>
-            <span id="stat-sla" class="text-2xl md:text-3xl font-black text-error">0</span>
-          </div>
-          <div class="glass-card p-4 md:p-5 rounded-xl border-l-4 border-emerald-500">
-            <span class="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1 leading-tight">Insiden Diselesaikan</span>
-            <span id="stat-resolved" class="text-2xl md:text-3xl font-black text-slate-900">0</span>
-          </div>
+        <div class="glass-card p-4 rounded-xl border-l-4 border-error bg-error-container/10 min-w-0">
+            <span class="text-[9px] font-bold text-error uppercase tracking-widest block mb-1 leading-tight truncate">Pelanggaran SLA</span>
+            <span id="stat-sla" class="text-xl md:text-2xl font-black text-error truncate">0</span>
         </div>
+        <div class="glass-card p-4 rounded-xl border-l-4 border-emerald-500 min-w-0">
+            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-1 leading-tight truncate">Insiden Diselesaikan</span>
+            <span id="stat-resolved" class="text-xl md:text-2xl font-black text-slate-900 truncate">0</span>
+        </div>
+ </div>
 
-        <div class="glass-card rounded-xl overflow-hidden">
-          <div class="px-4 md:px-6 py-4 md:py-5 border-b border-slate-200/50 bg-white/40 flex justify-between items-center">
-            <h3 class="text-xs md:text-sm font-bold text-slate-900 uppercase tracking-wide">Antrean Insiden Operasional Aktif</h3>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[700px]">
-              <thead class="bg-slate-50/80 border-b border-slate-200">
-                <tr class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  <th class="px-4 md:px-6 py-3 md:py-4">ID Referensi</th>
-                  <th class="px-4 md:px-6 py-3 md:py-4 w-48">Entitas Klien</th>
-                  <th class="px-4 md:px-6 py-3 md:py-4">Uraian Insiden</th>
-                  <th class="px-4 md:px-6 py-3 md:py-4 text-center">Tingkat Keparahan</th>
-                  <th class="px-4 md:px-6 py-3 md:py-4 text-center">Batas SLA</th>
-                  <th class="px-4 md:px-6 py-3 md:py-4 text-right">Penanggung Jawab</th>
-                  <th class="px-4 md:px-6 py-3 md:py-4 text-center">Tindakan</th>
-                </tr>
-              </thead>
-              <tbody id="ticket-table-body" class="divide-y divide-slate-100 bg-white">
-                <tr><td colspan="7" class="px-6 py-8 text-center text-slate-400 text-xs md:text-sm italic">Mengekstrak data dari peladen utama...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+ <div class="glass-card rounded-xl overflow-hidden">
+ <div class="px-4 md:px-6 py-4 md:py-5 border-b border-slate-200 bg-white flex justify-between items-center">
+ <h3 class="text-xs md:text-sm font-bold text-slate-900 uppercase tracking-wide">Antrean Insiden Operasional Aktif</h3>
+ </div>
+ <div class="overflow-x-auto">
+ <table class="w-full text-left min-w-[700px]">
+ <thead class="bg-slate-50 border-b border-slate-200 ">
+ <tr class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">
+ <th class="px-3 py-3 truncate">ID Referensi</th>
+ <th class="px-3 py-3 w-48 truncate">Entitas Klien</th>
+ <th class="px-3 py-3 truncate">Uraian Insiden</th>
+ <th class="px-3 py-3 text-center truncate">Tingkat Keparahan</th>
+ <th class="px-3 py-3 text-center truncate">Batas SLA</th>
+ <th class="px-3 py-3 text-right truncate">Penanggung Jawab</th>
+ <th class="px-3 py-3 text-center truncate">Tindakan</th>
+ </tr>
+ </thead>
+ <tbody id="ticket-table-body" class="divide-y divide-slate-100 bg-white ">
+ <tr><td colspan="7" class="px-6 py-8 text-center text-slate-400 text-xs md:text-sm italic">Mengekstrak data dari peladen utama...</td></tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+ </div>
+ </div>
+ </main>
 
-  <div id="modal-tambah-tiket" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] hidden pointer-events-none items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-    <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 overflow-hidden p-6 md:p-8 transform scale-95 transition-all duration-300 max-h-[95vh] overflow-y-auto custom-scrollbar" id="modal-content">
-        <div class="flex justify-between items-start mb-6 border-b border-slate-100 pb-5">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-galasus-blue flex items-center justify-center border border-blue-100/50">
-                    <span class="material-symbols-outlined">add_task</span>
-                </div>
-                <div>
-                    <h2 class="text-xl font-bold text-slate-800">Formulir Insiden Baru</h2>
-                    <p class="text-xs text-slate-500 font-medium mt-0.5">Dokumen penugasan untuk teknisi lapangan</p>
-                </div>
-            </div>
-            <button type="button" onclick="closeModal('modal-tambah-tiket')" class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-2 rounded-full transition-colors -mr-2">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-        </div>
-        <form id="form-tambah-tiket" class="space-y-5">
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1.5">Tanggal Pencatatan</label>
-                <input id="input-tanggal-manual" type="date" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 text-slate-600" required>
-            </div>
-            <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/60 space-y-4">
-                <label class="block text-xs font-bold text-slate-800 uppercase tracking-wide mb-1">Pemilihan Entitas Klien <span class="text-[9px] text-error font-medium italic normal-case block mt-0.5">*Pemilihan klien otomatis memotong kuota kontrak</span></label>
-                <select id="select-klien" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200" onchange="toggleManualClient()">
-                    <option value="">-- Mode Manual (Klien Guest) --</option>
-                </select>
-                <input id="input-pelanggan" type="text" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400" placeholder="Ketik nama klien secara manual..." required>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1.5">Rincian Laporan Masalah</label>
-                <textarea id="input-masalah" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm h-24 resize-none transition-all duration-200 placeholder:text-slate-400" placeholder="Deskripsikan anomali teknis secara rinci..." required></textarea>
-            </div>
-            <div class="grid grid-cols-2 gap-5">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Tingkat Prioritas</label>
-                    <select id="input-prioritas" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200">
-                        <option value="Kritis">Kritis (Critical)</option>
-                        <option value="Tinggi">Tinggi (High)</option>
-                        <option value="Info">Info (Standard)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Estimasi SLA (Jam)</label>
-                    <input id="input-sla" type="number" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200" value="2" min="1">
-                    <p id="sla-target-text" class="text-[10px] text-red-500 mt-1 italic hidden"></p>
-                </div>
-            </div>
-            <div class="pt-6 flex gap-4 border-t border-slate-100 mt-6">
-                <button type="button" onclick="closeModal('modal-tambah-tiket')" class="flex-1 py-3 bg-white border border-slate-200 text-slate-700 font-semibold text-sm rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-colors">Batalkan</button>
-                <button type="submit" class="flex-1 py-3 bg-galasus-blue text-white font-semibold text-sm rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200">Otorisasi Tiket</button>
-            </div>
-        </form>
-    </div>
-  </div>
+ <div id="modal-tambah-tiket" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] hidden pointer-events-none items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+ <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 overflow-hidden p-6 md:p-8 transform scale-95 transition-all duration-300 max-h-[95vh] overflow-y-auto custom-scrollbar" id="modal-content">
+ <div class="flex justify-between items-start mb-6 border-b border-slate-100 pb-5">
+ <div class="flex items-center gap-4">
+ <div class="w-12 h-12 rounded-2xl bg-blue-50 text-galasus-blue flex items-center justify-center border border-blue-100/50">
+ <span class="material-symbols-outlined">add_task</span>
+ </div>
+ <div>
+ <h2 class="text-xl font-bold text-slate-800 ">Formulir Insiden Baru</h2>
+ <p class="text-xs text-slate-500 font-medium mt-0.5">Dokumen penugasan untuk teknisi lapangan</p>
+ </div>
+ </div>
+ <button type="button" onclick="closeModal('modal-tambah-tiket')" class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-2 rounded-full transition-colors -mr-2">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ </div>
+ <form id="form-tambah-tiket" class="space-y-5">
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">Tanggal Pencatatan</label>
+ <input id="input-tanggal-manual" type="date" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 text-slate-600 " required>
+ </div>
+ <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+ <label class="block text-xs font-bold text-slate-800 uppercase tracking-wide mb-1">Pemilihan Entitas Klien <span class="text-[9px] text-error font-medium italic normal-case block mt-0.5">*Pemilihan klien otomatis memotong kuota kontrak</span></label>
+ <select id="select-klien" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200" onchange="toggleManualClient()">
+ <option value="">-- Mode Manual (Klien Guest) --</option>
+ </select>
+ <input id="input-pelanggan" type="text" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200 placeholder:text-slate-400" placeholder="Ketik nama klien secara manual..." required>
+ </div>
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">Rincian Laporan Masalah</label>
+ <textarea id="input-masalah" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-4 focus:ring-blue-500/10 outline-none text-sm h-24 resize-none transition-all duration-200 placeholder:text-slate-400" placeholder="Deskripsikan anomali teknis secara rinci..." required></textarea>
+ </div>
+ <div class="grid grid-cols-2 gap-5">
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">Tingkat Prioritas</label>
+ <select id="input-prioritas" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200">
+ <option value="Kritis">Kritis (Critical)</option>
+ <option value="Tinggi">Tinggi (High)</option>
+ <option value="Info">Info (Standard)</option>
+ </select>
+ </div>
+ <div>
+ <label class="block text-sm font-medium text-slate-700 mb-1.5">Estimasi SLA (Jam)</label>
+ <input id="input-sla" type="number" class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 outline-none text-sm transition-all duration-200" value="2" min="1">
+ <p id="sla-target-text" class="text-[10px] text-red-500 mt-1 italic hidden"></p>
+ </div>
+ </div>
+ <div class="pt-6 flex gap-4 border-t border-slate-100 mt-6">
+ <button type="button" onclick="closeModal('modal-tambah-tiket')" class="flex-1 py-3 bg-white border border-slate-200 text-slate-700 font-semibold text-sm rounded-xl hover:bg-slate-50 :bg-slate-800 hover:text-slate-900 transition-colors">Batalkan</button>
+ <button type="submit" class="flex-1 py-3 bg-galasus-blue text-white font-semibold text-sm rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200">Otorisasi Tiket</button>
+ </div>
+ </form>
+ </div>
+ </div>
 
-  <div id="modal-detail-tiket" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-100 overflow-hidden transform scale-95 transition-all duration-300 max-h-[95vh] flex flex-col" id="modal-detail-content">
-        <div class="flex justify-between items-start p-6 border-b border-slate-100">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center border border-slate-100">
-                    <span class="material-symbols-outlined">receipt_long</span>
-                </div>
-                <div>
-                    <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <span id="det-no-tiket">#SD-XXXX</span>
-                        <span id="det-status" class="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-slate-100 text-slate-500">Status</span>
-                    </h2>
-                    <p class="text-xs text-slate-500 font-medium mt-0.5" id="det-pelanggan">Memuat...</p>
-                </div>
-            </div>
-            <button type="button" onclick="closeModal('modal-detail-tiket', 'modal-detail-content')" class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-2 rounded-full transition-colors -mr-2">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-        </div>
-        
-        <div class="overflow-y-auto custom-scrollbar p-6 space-y-6 flex-1">
-            <div>
-                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Uraian Insiden</h3>
-                <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 text-sm text-slate-700 leading-relaxed" id="det-masalah">
-                    ...
-                </div>
-            </div>
-            
-            <div>
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Riwayat Aktivitas & Log</h3>
-                    <div class="flex gap-2">
-                        <button onclick="promptExtendSLA()" class="text-[10px] font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors border border-blue-100 flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[14px]">more_time</span> Tambah Waktu
-                        </button>
-                        <button onclick="promptHandoff()" class="text-[10px] font-bold text-amber-600 hover:text-amber-700 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg transition-colors border border-amber-100 flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[14px]">move_up</span> Delegasikan
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="space-y-4 pl-2 border-l-2 border-slate-100" id="det-timeline">
-                    <div class="text-xs text-slate-400 italic pl-4 py-2">Belum ada riwayat aktivitas.</div>
-                </div>
-            </div>
-        </div>
+ <div id="modal-detail-tiket" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+ <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-100 overflow-hidden transform scale-95 transition-all duration-300 max-h-[95vh] flex flex-col" id="modal-detail-content">
+ <div class="flex justify-between items-start p-6 border-b border-slate-100 ">
+ <div class="flex items-center gap-4">
+ <div class="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center border border-slate-100 ">
+ <span class="material-symbols-outlined">receipt_long</span>
+ </div>
+ <div>
+ <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+ <span id="det-no-tiket">#SD-XXXX</span>
+ <span id="det-status" class="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-slate-100 text-slate-500 ">Status</span>
+ </h2>
+ <p class="text-xs text-slate-500 font-medium mt-0.5" id="det-pelanggan">Memuat...</p>
+ </div>
+ </div>
+ <button type="button" onclick="closeModal('modal-detail-tiket', 'modal-detail-content')" class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 p-2 rounded-full transition-colors -mr-2">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ </div>
+ 
+ <div class="overflow-y-auto custom-scrollbar p-6 space-y-6 flex-1">
+ <div>
+ <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Uraian Insiden</h3>
+ <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 text-sm text-slate-700 leading-relaxed" id="det-masalah">
+ ...
+ </div>
+ </div>
+ 
+ <div>
+ <div class="flex items-center justify-between mb-4">
+ <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Riwayat Aktivitas & Log</h3>
+ <div class="flex gap-2">
+ <button onclick="promptExtendSLA()" class="text-[10px] font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors border border-blue-100 flex items-center gap-1">
+ <span class="material-symbols-outlined text-[14px]">more_time</span> Tambah Waktu
+ </button>
+ <button onclick="promptHandoff()" class="text-[10px] font-bold text-amber-600 hover:text-amber-700 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg transition-colors border border-amber-100 flex items-center gap-1">
+ <span class="material-symbols-outlined text-[14px]">move_up</span> Delegasikan
+ </button>
+ </div>
+ </div>
+ 
+ <div class="space-y-4 pl-2 border-l-2 border-slate-100 " id="det-timeline">
+ <div class="text-xs text-slate-400 italic pl-4 py-2">Belum ada riwayat aktivitas.</div>
+ </div>
+ </div>
+ </div>
 
-        <div class="p-6 border-t border-slate-100 bg-slate-50">
-            <form id="form-tambah-log" class="flex gap-3 items-end">
-                <div class="flex-1">
-                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tambah Catatan Progres</label>
-                    <input type="text" id="input-log-desc" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 outline-none text-sm transition-all" placeholder="Contoh: Kabel LAN selesai ditarik, menunggu konfigurasi IP..." required>
-                </div>
-                <button type="submit" class="px-5 py-3 bg-galasus-blue text-white font-semibold text-sm rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/25 transition-all flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">send</span> Kirim
-                </button>
-            </form>
-        </div>
-    </div>
-  </div>
+ <div class="p-6 border-t border-slate-100 bg-slate-50 ">
+ <form id="form-tambah-log" class="flex gap-3 items-end">
+ <div class="flex-1">
+ <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tambah Catatan Progres</label>
+ <input type="text" id="input-log-desc" class="w-full p-3 rounded-xl border border-slate-200 bg-white focus:border-galasus-blue focus:ring-2 focus:ring-blue-500/10 outline-none text-sm transition-all" placeholder="Contoh: Kabel LAN selesai ditarik, menunggu konfigurasi IP..." required>
+ </div>
+ <button type="submit" class="px-5 py-3 bg-galasus-blue text-white font-semibold text-sm rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/25 transition-all flex items-center gap-2">
+ <span class="material-symbols-outlined text-[18px]">send</span> Kirim
+ </button>
+ </form>
+ </div>
+ </div>
+ </div>
 
-  <script src="/public/js/dialog.js"></script>
-  <script src="/public/js/auth.js"></script>
-  <script src="/public/js/servicedesk.js?v=2"></script>
-  <script src="/public/js/notifications.js"></script>
+ <script src="/public/js/dialog.js"></script>
+ <script src="/public/js/auth.js"></script>
+ <script src="/public/js/servicedesk.js?v=2"></script>
+ <script src="/public/js/notifications.js"></script>
+ 
 </body>
 </html>

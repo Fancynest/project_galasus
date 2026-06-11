@@ -19,12 +19,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-archive');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
-            const kw = e.target.value.toLowerCase();
-            const filtered = archiveTickets.filter(t => 
-                (t.no_tiket || t.ticket_id || '').toLowerCase().includes(kw) ||
-                (t.pelanggan || t.Pelanggan || '').toLowerCase().includes(kw) ||
-                (t.masalah || t.Masalah || '').toLowerCase().includes(kw)
-            );
+            const query = e.target.value.toLowerCase().trim();
+            if (!query) {
+                renderArchiveTable(archiveTickets);
+                return;
+            }
+            const keywords = query.split(/\s+/);
+            const filtered = archiveTickets.filter(t => {
+                const searchableString = `
+                    ${t.no_tiket || t.ticket_id || ''} 
+                    ${t.pelanggan || t.Pelanggan || ''} 
+                    ${t.masalah || t.Masalah || ''} 
+                    ${t.teknisi || t.Teknisi || ''}
+                    ${t.status || t.Status || ''}
+                `.toLowerCase();
+                return keywords.every(kw => searchableString.includes(kw));
+            });
             renderArchiveTable(filtered);
         });
     }
@@ -195,7 +205,10 @@ async function viewDetail(id) {
                     ${noTiket}
                 </div>
             </div>
-            <div class="text-right flex items-center justify-end gap-4">
+            <div class="text-right flex items-center justify-end gap-2 md:gap-4">
+                <button onclick="deleteArchive('${t.id}')" class="flex items-center gap-2 px-3 py-2 bg-red-50 border border-red-200 text-red-600 hover:bg-red-600 hover:text-white transition-colors rounded-xl font-bold text-xs uppercase tracking-wider">
+                    <span class="material-symbols-outlined text-sm">delete</span> Hapus
+                </button>
                 <button onclick="exportBAPPDF('${t.id}')" class="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 text-galasus-blue hover:bg-galasus-blue hover:text-white transition-colors rounded-xl font-bold text-xs uppercase tracking-wider">
                     <span class="material-symbols-outlined text-sm">picture_as_pdf</span> Cetak BAP
                 </button>
@@ -437,4 +450,30 @@ async function exportBAPPDF(id) {
     const d = new Date();
     const dateStr = `${String(d.getDate()).padStart(2, '0')}${d.toLocaleString('id-ID', { month: 'short' }).replace('.', '')}${d.getFullYear()}_${String(d.getHours()).padStart(2, '0')}${String(d.getMinutes()).padStart(2, '0')}`;
     doc.save(`BAP_Internal_${noTiket.replace(/[^a-zA-Z0-9]/g, '_')}_${dateStr}.pdf`);
-}
+}
+
+window.deleteArchive = async function(id) {
+    if (!await GalasusDialog.confirm('AWAS! Apakah kamu yakin ingin menghapus Arsip Tiket (BAP) ini secara permanen?\n\nSemua foto bukti kerusakan dan perbaikan akan ikut terhapus dari harddisk server dan tidak bisa dikembalikan.')) {
+        return;
+    }
+
+    const token = localStorage.getItem('galasus_token');
+    try {
+        const response = await fetch(`/tickets/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+            showNotification('Arsip BAP dan foto-foto terkait berhasil dilenyapkan dari server.', 'success');
+            loadInitialData(); // Muat ulang data
+            closeDetailTiket(); // Tutup modal jika sedang terbuka
+        } else {
+            const data = await response.json();
+            showNotification(data.message || 'Gagal menghapus arsip.', 'error');
+        }
+    } catch (error) {
+        console.error('Error deleting archive:', error);
+        showNotification('Terjadi kesalahan jaringan saat menghapus arsip.', 'error');
+    }
+};

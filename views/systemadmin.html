@@ -2,304 +2,300 @@
 <html class="light" lang="id">
 
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Galasus | Administrasi Sistem</title>
+ <meta charset="utf-8" />
+ <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+ <title>Galasus | Administrasi Sistem</title>
 
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-    rel="stylesheet" />
+ <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+ <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap"
+ rel="stylesheet" />
+ <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+ rel="stylesheet" />
 
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "galasus-blue": "#0274BE",
-            "surface-container-lowest": "#ffffff",
-            "secondary-container": "#d5e0f8",
-            "on-surface": "#1b1b1d",
-            "outline": "#76777d",
-            "error-container": "#ffdad6",
-            "error": "#ba1a1a",
-          },
-          fontFamily: { "sans": ["Inter"] }
-        }
-      }
-    }
-  </script>
-  <style>
-    .glass-card {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(226, 232, 240, 0.5);
-      box-shadow: 0px 4px 20px rgba(15, 23, 42, 0.05);
-    }
+ <script id="tailwind-config">
+ tailwind.config = {
+ darkMode: "class",
+ theme: {
+ extend: {
+ colors: {
+ "galasus-blue": "#0274BE",
+ "surface-container-lowest": "#ffffff",
+ "secondary-container": "#d5e0f8",
+ "on-surface": "#1b1b1d",
+ "outline": "#76777d",
+ "error-container": "#ffdad6",
+ "error": "#ba1a1a",
+ },
+ fontFamily: { sans: ["Plus Jakarta Sans", "sans-serif"] }
+ }
+ }
+ }
+ </script>
+ <style>
+ .glass-card {
+ background: rgba(255, 255, 255, 0.7);
+ backdrop-filter: blur(12px);
+ border: 1px solid rgba(226, 232, 240, 0.5);
+ box-shadow: 0px 4px 20px rgba(15, 23, 42, 0.05);
+ }
 
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-      vertical-align: middle;
-    }
+ .material-symbols-outlined {
+ font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+ vertical-align: middle;
+ }
 
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-    }
+ .custom-scrollbar::-webkit-scrollbar {
+ width: 6px;
+ }
 
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #e2e8f0;
-      border-radius: 10px;
-    }
-  </style>
+ .custom-scrollbar::-webkit-scrollbar-thumb {
+ background: #e2e8f0;
+ border-radius: 10px;
+ }
+ 
+ </style>
 
-  <link rel="icon" type="image/svg+xml" href="/public/photos/Logo-Galasus178x40.svg">
+ <link rel="icon" type="image/svg+xml" href="/public/photos/Logo-Galasus178x40.svg">
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex overflow-hidden">
+<body class="font-sans antialiased bg-slate-50 text-slate-800 min-h-screen flex overflow-hidden">
 
-  <aside id="mobile-sidebar"
-    class="transform -translate-x-full md:translate-x-0 transition-transform duration-300 fixed inset-y-0 left-0 w-64 bg-white/95 md:bg-white/80 backdrop-blur-xl border-r border-slate-200/50 flex flex-col p-4 gap-2 z-50 shadow-2xl md:shadow-none">
-    <button id="close-sidebar-btn"
-      class="md:hidden absolute top-4 right-4 text-slate-400 hover:text-error transition-colors">
-      <span class="material-symbols-outlined">close</span>
+   <aside id="mobile-sidebar" class="transform -translate-x-full md:translate-x-0 transition-transform duration-300 fixed inset-y-0 left-0 w-64 bg-white/95 md:bg-white/80 backdrop-blur-xl border-r border-slate-200/50 flex flex-col p-4 gap-2 z-50 shadow-2xl md:shadow-none">
+    
+    <button id="close-sidebar-btn" class="md:hidden absolute top-4 right-4 text-slate-400 hover:text-error transition-colors">
+        <span class="material-symbols-outlined">close</span>
     </button>
+
     <div class="px-2 py-4 mb-4 flex items-center justify-center border-b border-slate-100 mt-4 md:mt-0">
       <img src="/public/photos/Logo-Galasus178x40.svg" alt="Logo Galasus" class="w-full max-w-[150px] object-contain" />
     </div>
     <nav class="flex flex-col gap-1 flex-1">
-      <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 transition-colors rounded-lg font-medium"
-        href="/views/superadmin.html">
+      <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 transition-colors rounded-lg font-medium" href="/views/superadmin.html">
         <span class="material-symbols-outlined">dashboard</span>
         <span>Dasbor Utama</span>
       </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 transition-colors rounded-lg font-medium"
-        href="/views/clientmanagement.html">
+      <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 transition-colors rounded-lg font-medium" href="/views/clientmanagement.html">
         <span class="material-symbols-outlined">groups</span>
         <span>Manajemen Klien</span>
       </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 transition-colors rounded-lg font-medium"
-        href="/views/servicedesk.html">
+      <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 transition-colors rounded-lg font-medium" href="/views/servicedesk.html">
         <span class="material-symbols-outlined">support_agent</span>
         <span>Layanan Bantuan</span>
       </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 transition-colors rounded-lg font-medium"
-        href="/views/financemng.html">
+      <a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 transition-colors rounded-lg font-medium" href="/views/financemng.html">
         <span class="material-symbols-outlined">account_balance_wallet</span>
         <span>Modul Keuangan</span>
       </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 bg-galasus-blue text-white rounded-lg shadow-md font-semibold transition-all duration-300"
-        href="#">
+      <a class="flex items-center gap-3 px-3 py-2.5 bg-galasus-blue text-white rounded-lg shadow-md font-semibold transition-all duration-300" href="/views/systemadmin.html">
         <span class="material-symbols-outlined">admin_panel_settings</span>
         <span>Admin Sistem</span>
       </a>
     </nav>
     <div class="mt-auto pt-4 border-t border-slate-200/50">
-      <a id="btn-logout"
-        class="flex items-center gap-3 px-3 py-2.5 text-red-600 hover:bg-red-50 transition-colors rounded-lg font-medium cursor-pointer">
-        <span class="material-symbols-outlined">logout</span>
-        <span>Keluar Sesi</span>
-      </a>
+        <a id="btn-logout" class="flex items-center gap-3 px-3 py-2.5 text-red-600 hover:bg-red-50 transition-colors rounded-lg font-medium cursor-pointer">
+            <span class="material-symbols-outlined">logout</span>
+            <span>Keluar Sesi</span>
+        </a>
     </div>
   </aside>
 
-  <div id="sidebar-overlay"
-    class="fixed inset-0 bg-slate-900/50 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
+ <div id="sidebar-overlay"
+ class="fixed inset-0 bg-slate-900/50 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
-  <main class="flex-1 ml-0 md:ml-64 flex flex-col h-screen">
-    <header
-      class="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-sm px-4 md:px-8 py-3 md:py-4 flex justify-between items-center">
-      <div class="flex items-center gap-4">
-        <button id="open-sidebar-btn" class="md:hidden text-slate-600 hover:text-galasus-blue p-2">
-          <span class="material-symbols-outlined">menu</span>
-        </button>
-        <div class="relative w-full max-w-lg hidden md:block">
-          <span
-            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-          <input id="search-user"
-            class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-1 focus:ring-galasus-blue outline-none transition-all shadow-sm"
-            placeholder="Penelusuran direktori kredensial..." type="text" />
-        </div>
-      </div>
+ <main class="flex-1 ml-0 md:ml-64 flex flex-col h-screen">
+ <header
+ class="sticky top-0 z-30 bg-white backdrop-blur-xl border-b border-slate-200 shadow-sm px-4 md:px-8 py-3 md:py-4 flex justify-between items-center">
+ <div class="flex items-center gap-4">
+ <button id="open-sidebar-btn" class="md:hidden text-slate-600 hover:text-galasus-blue p-2">
+ <span class="material-symbols-outlined">menu</span>
+ </button>
+ <div class="relative w-full max-w-lg hidden md:block">
+ <span
+ class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+ <input id="search-user"
+ class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-1 focus:ring-galasus-blue outline-none transition-all shadow-sm"
+ placeholder="Penelusuran direktori kredensial..." type="text" />
+ </div>
+ </div>
 
-      <div class="flex items-center gap-4">
-        <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
-        <div class="flex items-center gap-3">
-          <div class="text-right hidden md:block">
-            <p class="text-xs font-bold text-slate-800" id="user-name">Memuat...</p>
-            <p class="text-[10px] text-slate-500 uppercase tracking-wider font-semibold" id="user-role">Memuat...</p>
-          </div>
-          <div
-            class="w-9 h-9 rounded-full bg-galasus-blue/10 flex items-center justify-center border border-galasus-blue/20">
-            <span class="text-galasus-blue font-bold text-sm" id="user-initials">??</span>
-          </div>
-        </div>
-      </div>
-    </header>
+ <div class="flex items-center gap-4">
+ <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
+ <div class="flex items-center gap-3">
+ <div class="text-right hidden md:block">
+ <p class="text-xs font-bold text-slate-800 " id="user-name">Memuat...</p>
+ <p class="text-[10px] text-slate-500 uppercase tracking-wider font-semibold" id="user-role">Memuat...</p>
+ </div>
+ <div
+ class="w-9 h-9 rounded-full bg-galasus-blue/10 flex items-center justify-center border border-galasus-blue/20">
+ <span class="text-galasus-blue font-bold text-sm" id="user-initials">??</span>
+ </div>
+ </div>
+ </div>
+ </header>
 
-    <div class="flex-1 p-4 md:p-8 overflow-y-auto custom-scrollbar">
-      <div class="space-y-6 md:space-y-8 max-w-[1440px] mx-auto">
+ <div class="flex-1 p-4 md:p-8 overflow-y-auto custom-scrollbar">
+ <div class="space-y-6 md:space-y-8 max-w-[1440px] mx-auto">
 
-        <div class="relative w-full md:hidden mb-2">
-          <span
-            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-          <input id="search-user-mobile"
-            class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm focus:ring-1 focus:ring-galasus-blue outline-none transition-all shadow-sm"
-            placeholder="Cari pengguna sistem..." type="text" />
-        </div>
+ <div class="relative w-full md:hidden mb-2">
+ <span
+ class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+ <input id="search-user-mobile"
+ class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm focus:ring-1 focus:ring-galasus-blue outline-none transition-all shadow-sm"
+ placeholder="Cari pengguna sistem..." type="text" />
+ </div>
 
-        <div>
-          <h1 class="text-2xl md:text-3xl font-bold text-slate-900 mb-1 tracking-tight">Administrasi Infrastruktur IT
-          </h1>
-          <p class="text-slate-500 text-xs md:text-sm">Konfigurasi otoritas akses kontrol dan pemantauan keamanan (IAM).
-          </p>
-        </div>
+ <div>
+ <h1 class="text-2xl md:text-3xl font-bold text-slate-900 mb-1 tracking-tight">Administrasi Infrastruktur IT
+ </h1>
+ <p class="text-slate-500 text-xs md:text-sm">Konfigurasi otoritas akses kontrol dan pemantauan keamanan (IAM).
+ </p>
+ </div>
 
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <div class="glass-card p-4 md:p-5 rounded-xl border-l-4 border-l-slate-900">
-            <div class="flex justify-between items-start mb-3">
-              <div class="p-2 bg-slate-100 rounded-lg"><span
-                  class="material-symbols-outlined text-slate-900">group</span></div>
-              <span
-                class="text-[9px] md:text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">+2.4%</span>
-            </div>
-            <p class="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">
-              Kredensial Aktif</p>
-            <h3 id="stat-active-users" class="text-xl md:text-2xl font-bold text-slate-900 mt-2">0</h3>
-          </div>
-          <div class="glass-card p-4 md:p-5 rounded-xl border-l-4 border-l-error bg-error-container/10">
-            <div class="flex justify-between items-start mb-3">
-              <div class="p-2 bg-error/10 rounded-lg"><span
-                  class="material-symbols-outlined text-error">person_off</span></div>
-              <span
-                class="hidden md:inline-block text-[9px] md:text-[10px] font-bold text-error bg-error/10 px-2 py-1 rounded-full uppercase tracking-wider">Akses</span>
-            </div>
-            <p class="text-[9px] md:text-[10px] font-bold text-error uppercase tracking-widest leading-none">Sesi
-              Ditangguhkan</p>
-            <h3 id="stat-suspended" class="text-xl md:text-2xl font-bold text-error mt-2">0</h3>
-          </div>
-          <div class="glass-card p-4 md:p-5 rounded-xl border-l-4 border-l-galasus-blue hidden sm:block">
-            <div class="flex justify-between items-start mb-3">
-              <div class="p-2 bg-blue-50 rounded-lg"><span
-                  class="material-symbols-outlined text-galasus-blue">database</span></div>
-            </div>
-            <p class="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Beban
-              Peladen (DB)</p>
-            <h3 id="stat-db" class="text-xl md:text-2xl font-bold text-slate-900 mt-2">0%</h3>
-          </div>
-          <div class="glass-card p-4 md:p-5 rounded-xl border-l-4 border-l-emerald-500 hidden sm:block">
-            <div class="flex justify-between items-start mb-3">
-              <div class="p-2 bg-emerald-50 rounded-lg"><span
-                  class="material-symbols-outlined text-emerald-500">upload_file</span></div>
-            </div>
-            <p class="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Uptime Sistem</p>
-            <h3 id="stat-uptime" class="text-xl md:text-2xl font-bold text-slate-900 mt-2">0%</h3>
-          </div>
-        </div>
+ <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+ <div class="glass-card p-4 md:p-5 rounded-xl border-l-4 border-l-slate-900">
+ <div class="flex justify-between items-start mb-3">
+ <div class="p-2 bg-slate-100 rounded-lg"><span
+ class="material-symbols-outlined text-slate-900 ">group</span></div>
+ <span
+ class="text-[9px] md:text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">+2.4%</span>
+ </div>
+ <p class="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">
+ Kredensial Aktif</p>
+ <h3 id="stat-active-users" class="text-xl md:text-2xl font-bold text-slate-900 mt-2">0</h3>
+ </div>
+ <div class="glass-card p-4 md:p-5 rounded-xl border-l-4 border-l-error bg-error-container/10">
+ <div class="flex justify-between items-start mb-3">
+ <div class="p-2 bg-error/10 rounded-lg"><span
+ class="material-symbols-outlined text-error">person_off</span></div>
+ <span
+ class="hidden md:inline-block text-[9px] md:text-[10px] font-bold text-error bg-error/10 px-2 py-1 rounded-full uppercase tracking-wider">Akses</span>
+ </div>
+ <p class="text-[9px] md:text-[10px] font-bold text-error uppercase tracking-widest leading-none">Sesi
+ Ditangguhkan</p>
+ <h3 id="stat-suspended" class="text-xl md:text-2xl font-bold text-error mt-2">0</h3>
+ </div>
+ <div class="glass-card p-4 md:p-5 rounded-xl border-l-4 border-l-galasus-blue hidden sm:block">
+ <div class="flex justify-between items-start mb-3">
+ <div class="p-2 bg-blue-50 rounded-lg"><span
+ class="material-symbols-outlined text-galasus-blue">database</span></div>
+ </div>
+ <p class="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Beban
+ Peladen (DB)</p>
+ <h3 id="stat-db" class="text-xl md:text-2xl font-bold text-slate-900 mt-2">0%</h3>
+ </div>
+ <div class="glass-card p-4 md:p-5 rounded-xl border-l-4 border-l-emerald-500 hidden sm:block">
+ <div class="flex justify-between items-start mb-3">
+ <div class="p-2 bg-emerald-50 rounded-lg"><span
+ class="material-symbols-outlined text-emerald-500">upload_file</span></div>
+ </div>
+ <p class="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Uptime Sistem</p>
+ <h3 id="stat-uptime" class="text-xl md:text-2xl font-bold text-slate-900 mt-2">0%</h3>
+ </div>
+ </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
+ <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
 
-          <div class="col-span-1 lg:col-span-8 glass-card rounded-xl overflow-hidden flex flex-col order-2 lg:order-1">
-            <div
-              class="px-4 md:px-6 py-4 border-b border-slate-200 bg-white/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Matriks Direktori Akses (IAM)</h3>
-              <div class="flex gap-2 w-full sm:w-auto">
-                <button id="btn-export"
-                  class="flex-1 sm:flex-none px-3 py-2 sm:py-1.5 text-[9px] md:text-[10px] font-bold border border-slate-200 rounded-lg bg-white uppercase hover:bg-slate-50 transition-colors shadow-sm">Ekspor
-                  Audit</button>
-                <select id="filter-role"
-                  class="flex-1 sm:flex-none px-3 py-2 sm:py-1.5 text-[9px] md:text-[10px] font-bold border border-slate-200 rounded-lg bg-white uppercase outline-none cursor-pointer shadow-sm focus:ring-1 focus:ring-galasus-blue">
-                  <option value="all">Semua Hierarki</option>
-                  <option value="super admin">Super Admin (Lv 1)</option>
-                  <option value="finance">Finance (Lv 2)</option>
-                  <option value="technician">Technician (Lv 3)</option>
-                </select>
-              </div>
-            </div>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left min-w-[700px]">
-                <thead
-                  class="bg-slate-50 text-[10px] uppercase text-slate-400 font-bold tracking-widest border-b border-slate-100">
-                  <tr>
-                    <th class="px-6 py-4">Profil Eksekutif</th>
-                    <th class="px-6 py-4">Izin Akses</th>
-                    <th class="px-6 py-4">Validasi Sesi</th>
-                    <th class="px-6 py-4 text-right">Opsi Pengendalian</th>
-                  </tr>
-                </thead>
-                <tbody id="user-table-body" class="divide-y divide-slate-100 bg-white">
-                  <tr>
-                    <td colspan="4" class="px-6 py-8 text-center text-sm text-slate-400 italic">Melakukan sinkronisasi
-                      ke peladen...</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+ <div class="col-span-1 lg:col-span-8 glass-card rounded-xl overflow-hidden flex flex-col order-2 lg:order-1">
+ <div
+ class="px-4 md:px-6 py-4 border-b border-slate-200 bg-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+ <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Matriks Direktori Akses (IAM)</h3>
+ <div class="flex gap-2 w-full sm:w-auto">
+ <button id="btn-export"
+ class="flex-1 sm:flex-none px-3 py-2 sm:py-1.5 text-[9px] md:text-[10px] font-bold border border-slate-200 rounded-lg bg-white uppercase hover:bg-slate-50 :bg-slate-800 transition-colors shadow-sm">Ekspor
+ Audit</button>
+ <select id="filter-role"
+ class="flex-1 sm:flex-none px-3 py-2 sm:py-1.5 text-[9px] md:text-[10px] font-bold border border-slate-200 rounded-lg bg-white uppercase outline-none cursor-pointer shadow-sm focus:ring-1 focus:ring-galasus-blue">
+ <option value="all">Semua Hierarki</option>
+ <option value="super admin">Super Admin (Lv 1)</option>
+ <option value="finance">Finance (Lv 2)</option>
+ <option value="technician">Technician (Lv 3)</option>
+ </select>
+ </div>
+ </div>
+ <div class="overflow-x-auto">
+ <table class="w-full text-left min-w-[700px]">
+ <thead
+ class="bg-slate-50 text-[10px] uppercase text-slate-400 font-bold tracking-widest border-b border-slate-100 ">
+ <tr>
+ <th class="px-6 py-4">Profil Eksekutif</th>
+ <th class="px-6 py-4">Izin Akses</th>
+ <th class="px-6 py-4">Validasi Sesi</th>
+ <th class="px-6 py-4 text-right">Opsi Pengendalian</th>
+ </tr>
+ </thead>
+ <tbody id="user-table-body" class="divide-y divide-slate-100 bg-white ">
+ <tr>
+ <td colspan="4" class="px-6 py-8 text-center text-sm text-slate-400 italic">Melakukan sinkronisasi
+ ke peladen...</td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
 
-          <div class="col-span-1 lg:col-span-4 space-y-6 order-1 lg:order-2">
-            <div class="glass-card rounded-xl overflow-hidden shadow-xl border-none bg-white">
-              <div class="p-5 md:p-6 bg-slate-900 text-white relative overflow-hidden">
-                <h3 class="font-bold text-base md:text-lg leading-tight relative z-10 tracking-tight">Provisi Akses Baru
-                </h3>
-                <p class="text-[10px] md:text-[11px] text-slate-400 mt-1 relative z-10 leading-relaxed">Pembuatan
-                  kredensial sistem mandiri bagi personel internal.</p>
-              </div>
-              <form id="form-register" class="p-5 md:p-6 space-y-4 bg-white/50">
-                <div class="space-y-1.5">
-                  <label class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest"
-                    for="reg-name">Nama Direktori Lengkap</label>
-                  <input id="reg-name"
-                    class="w-full border-slate-200 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-galasus-blue/20 outline-none shadow-sm"
-                    placeholder="Contoh: Berto" type="text" required />
-                </div>
-                <div class="space-y-1.5">
-                  <label class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest"
-                    for="reg-email">Alamat Surel (Korporat)</label>
-                  <input id="reg-email"
-                    class="w-full border-slate-200 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-galasus-blue/20 outline-none shadow-sm"
-                    placeholder="nama@galasus.com" type="email" required />
-                </div>
-                <div class="space-y-1.5">
-                  <label class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest"
-                    for="reg-role">Klasifikasi Kewenangan</label>
-                  <select id="reg-role"
-                    class="w-full border-slate-200 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-galasus-blue/20 outline-none bg-white shadow-sm"
-                    required>
-                    <option value="">-- Tetapkan Level Hierarki --</option>
-                    <option value="super admin">Super Admin (Full Root Access)</option>
-                    <option value="finance">Manajer Keuangan (Read/Write DB)</option>
-                    <option value="technician">Teknisi Lapangan (Restricted Access)</option>
-                  </select>
-                </div>
+ <div class="col-span-1 lg:col-span-4 space-y-6 order-1 lg:order-2">
+ <div class="glass-card rounded-xl overflow-hidden shadow-xl border-none bg-white ">
+ <div class="p-5 md:p-6 bg-slate-900 text-white relative overflow-hidden">
+ <h3 class="font-bold text-base md:text-lg leading-tight relative z-10 tracking-tight">Provisi Akses Baru
+ </h3>
+ <p class="text-[10px] md:text-[11px] text-slate-400 mt-1 relative z-10 leading-relaxed">Pembuatan
+ kredensial sistem mandiri bagi personel internal.</p>
+ </div>
+ <form id="form-register" class="p-5 md:p-6 space-y-4 bg-white ">
+ <div class="space-y-1.5">
+ <label class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest"
+ for="reg-name">Nama Direktori Lengkap</label>
+ <input id="reg-name"
+ class="w-full border-slate-200 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-galasus-blue/20 outline-none shadow-sm"
+ placeholder="Contoh: Berto" type="text" required />
+ </div>
+ <div class="space-y-1.5">
+ <label class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest"
+ for="reg-email">Alamat Surel (Korporat)</label>
+ <input id="reg-email"
+ class="w-full border-slate-200 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-galasus-blue/20 outline-none shadow-sm"
+ placeholder="nama@galasus.com" type="email" required />
+ </div>
+ <div class="space-y-1.5">
+ <label class="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest"
+ for="reg-role">Klasifikasi Kewenangan</label>
+ <select id="reg-role"
+ class="w-full border-slate-200 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-galasus-blue/20 outline-none bg-white shadow-sm"
+ required>
+ <option value="">-- Tetapkan Level Hierarki --</option>
+ <option value="super admin">Super Admin (Full Root Access)</option>
+ <option value="finance">Manajer Keuangan (Read/Write DB)</option>
+ <option value="technician">Teknisi Lapangan (Restricted Access)</option>
+ </select>
+ </div>
 
-                <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-start gap-2.5 mt-2">
-                  <span class="material-symbols-outlined text-galasus-blue text-[18px]">key</span>
-                  <div class="text-[10px] md:text-[11px] leading-tight">
-                    <p class="font-bold text-slate-700">Dekripsi Default: <span
-                        class="font-black bg-white px-1 py-0.5 rounded border border-slate-200">Galasus123!</span></p>
-                    <p class="text-slate-500 mt-1">Kebijakan Zero-Trust mengharuskan penggantian sandi pada sesi
-                      inisial.</p>
-                  </div>
-                </div>
+ <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-start gap-2.5 mt-2">
+ <span class="material-symbols-outlined text-galasus-blue text-[18px]">key</span>
+ <div class="text-[10px] md:text-[11px] leading-tight">
+ <p class="font-bold text-slate-700 ">Dekripsi Default: <span
+ class="font-black bg-white px-1 py-0.5 rounded border border-slate-200 ">Galasus123!</span></p>
+ <p class="text-slate-500 mt-1">Kebijakan Zero-Trust mengharuskan penggantian sandi pada sesi
+ inisial.</p>
+ </div>
+ </div>
 
-                <button type="submit" id="btn-register"
-                  class="w-full bg-galasus-blue text-white py-3.5 rounded-lg font-black text-[10px] md:text-xs hover:bg-blue-700 shadow-xl shadow-blue-900/20 active:scale-[0.98] transition-all uppercase tracking-widest mt-2">Eksekusi
-                  Pembuatan Kredensial</button>
-                <p class="text-[9px] text-center text-slate-400 font-medium">Sistem otomatis merekam jejak operasi untuk
-                  Audit Trail.</p>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+ <button type="submit" id="btn-register"
+ class="w-full bg-galasus-blue text-white py-3.5 rounded-lg font-black text-[10px] md:text-xs hover:bg-blue-700 shadow-xl shadow-blue-900/20 active:scale-[0.98] transition-all uppercase tracking-widest mt-2">Eksekusi
+ Pembuatan Kredensial</button>
+ <p class="text-[9px] text-center text-slate-400 font-medium">Sistem otomatis merekam jejak operasi untuk
+ Audit Trail.</p>
+ </form>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </main>
 
-  <script src="/public/js/dialog.js"></script>
-  <script src="/public/js/auth.js"></script>
-  <script src="/public/js/sysadmin.js"></script>
+ <script src="/public/js/dialog.js"></script>
+ <script src="/public/js/auth.js"></script>
+ <script src="/public/js/sysadmin.js"></script>
+ 
 </body>
 
 </html>

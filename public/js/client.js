@@ -35,8 +35,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-client');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
-            const kw = e.target.value.toLowerCase();
-            const filtered = allClients.filter(c => c.name.toLowerCase().includes(kw));
+            const query = e.target.value.toLowerCase().trim();
+            if (!query) {
+                renderTable(allClients);
+                return;
+            }
+            const keywords = query.split(/\s+/);
+            const filtered = allClients.filter(c => {
+                const searchableString = `
+                    ${c.name || ''} 
+                    ${c.pic || ''} 
+                    ${c.phone || ''} 
+                    ${c.package_type || ''} 
+                    ${c.add_on_services || ''} 
+                    ${c.assets || ''}
+                `.toLowerCase();
+                
+                return keywords.every(kw => searchableString.includes(kw));
+            });
             renderTable(filtered);
         });
     }
@@ -183,7 +199,7 @@ function renderTable(data) {
         const daysLeft = calculateDaysLeft(client.contract_end);
         const isWarning = daysLeft <= 30 && daysLeft > 0;
         const isExpired = daysLeft <= 0;
-        const assetsCount = client.assets ? client.assets.split(',').length : 0;
+        const assetsCount = (client.assets && client.assets.trim() !== '') ? client.assets.trim().split(',').length : 0;
 
         let contractTxt = `<span class="text-slate-600 font-bold">${new Date(client.contract_end).toLocaleDateString('id-ID')}</span>`;
         if (isWarning) contractTxt = `<span class="text-red-500 font-black bg-red-50 px-2 py-1 rounded-md flex items-center justify-center gap-1 shadow-sm border border-red-100"><span class="material-symbols-outlined text-[14px]">warning</span> Tersisa ${daysLeft} Hari</span>`;
@@ -208,22 +224,22 @@ function renderTable(data) {
 
         tbody.insertAdjacentHTML('beforeend', `
             <tr class="hover:bg-slate-50/70 transition-colors group">
-                <td class="px-4 md:px-6 py-3 md:py-4">
+                <td class="px-3 py-3 md:py-4 truncate">
                     <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-50 to-slate-100 border border-slate-200 flex items-center justify-center font-black text-galasus-blue text-xs shadow-sm">${client.name ? client.name.substring(0,2).toUpperCase() : 'NA'}</div>
-                        <span class="font-bold text-slate-900 text-xs md:text-sm tracking-tight">${client.name || 'Data Kosong'}</span>
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-50 to-slate-100 border border-slate-200 flex items-center justify-center font-black text-galasus-blue text-xs shadow-sm flex-shrink-0">${client.name ? client.name.substring(0,2).toUpperCase() : 'NA'}</div>
+                        <span class="font-bold text-slate-900 text-xs md:text-sm tracking-tight truncate">${client.name || 'Data Kosong'}</span>
                     </div>
                 </td>
-                <td class="px-4 md:px-6 py-3 md:py-4">
-                    <p class="font-bold text-slate-700 text-[11px] md:text-xs">${client.pic}</p>
-                    <p class="text-[9px] md:text-[10px] font-medium text-slate-400 font-mono mt-0.5">${client.phone}</p>
+                <td class="px-3 py-3 md:py-4 truncate">
+                    <p class="font-bold text-slate-700 text-[11px] md:text-xs truncate">${client.pic}</p>
+                    <p class="text-[9px] md:text-[10px] font-medium text-slate-400 font-mono mt-0.5 truncate">${client.phone}</p>
                 </td>
-                <td class="px-4 md:px-6 py-3 md:py-4">${quotaHtml}</td>
-                <td class="px-4 md:px-6 py-3 md:py-4 text-center text-xs">${contractTxt}</td>
-                <td class="px-4 md:px-6 py-3 md:py-4 text-center">
+                <td class="px-3 py-3 md:py-4">${quotaHtml}</td>
+                <td class="px-3 py-3 md:py-4 text-center text-xs truncate">${contractTxt}</td>
+                <td class="px-3 py-3 md:py-4 text-center truncate">
                     <span class="font-black text-slate-600 text-[10px] md:text-xs bg-slate-100 px-2 py-1 rounded-lg shadow-sm border border-slate-200">${assetsCount} Item</span>
                 </td>
-                <td class="px-4 md:px-6 py-3 md:py-4 text-right flex items-center justify-end gap-1.5 md:gap-2 h-full">
+                <td class="px-3 py-3 md:py-4 text-right flex items-center justify-end gap-1.5 md:gap-2 h-full whitespace-nowrap">
                     ${(client.status || 'active') === 'active' 
                         ? `<span class="bg-emerald-50 text-emerald-600 border border-emerald-100 px-2 py-1 rounded text-[9px] font-black uppercase tracking-wider hidden sm:inline-block">Aktif</span>`
                         : `<span class="bg-slate-200 text-slate-500 border border-slate-300 px-2 py-1 rounded text-[9px] font-black uppercase tracking-wider hidden sm:inline-block">Ditangguhkan</span>`
@@ -261,7 +277,7 @@ function updateStats(data) {
     const warningClients = activeData.filter(c => calculateDaysLeft(c.contract_end) <= 30 && calculateDaysLeft(c.contract_end) > 0).length;
     document.getElementById('stat-warning').textContent = warningClients;
     
-    const totalAssets = activeData.reduce((sum, c) => sum + (c.assets ? c.assets.split(',').length : 0), 0);
+    const totalAssets = activeData.reduce((sum, c) => sum + ((c.assets && c.assets.trim() !== '') ? c.assets.trim().split(',').length : 0), 0);
     document.getElementById('stat-assets').textContent = totalAssets;
 }
 
@@ -274,7 +290,7 @@ function openDetail(id) {
     
     document.getElementById('det-addons').textContent = c.add_on_services || 'Tidak ada layanan tambahan yang terdaftar.';
     
-    const assetList = c.assets ? c.assets.split(',').map(a => `
+    const assetList = (c.assets && c.assets.trim() !== '') ? c.assets.trim().split(',').map(a => `
         <div class="flex items-center gap-3 p-2 border-b border-slate-100 last:border-0 hover:bg-slate-50">
             <span class="material-symbols-outlined text-slate-400 text-sm">dns</span>
             <span class="text-sm font-medium text-slate-700">${a.trim()}</span>

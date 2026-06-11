@@ -119,10 +119,14 @@ function renderTicketList() {
 
         let matchSearch = true;
         if (searchQuery !== '') {
-            const pelanggan = (t.pelanggan || t.Pelanggan || '').toLowerCase();
-            const noTiket = (t.no_tiket || t.NoTiket || t.ticket_id || '').toLowerCase();
-            const masalah = (t.masalah || t.Masalah || '').toLowerCase();
-            matchSearch = pelanggan.includes(searchQuery) || noTiket.includes(searchQuery) || masalah.includes(searchQuery);
+            const keywords = searchQuery.split(/\s+/);
+            const searchableString = `
+                ${t.no_tiket || t.NoTiket || t.ticket_id || ''} 
+                ${t.pelanggan || t.Pelanggan || ''} 
+                ${t.masalah || t.Masalah || ''} 
+                ${t.status || t.Status || ''}
+            `.toLowerCase();
+            matchSearch = keywords.every(kw => searchableString.includes(kw));
         }
 
         return matchTab && matchSearch;
@@ -172,7 +176,7 @@ function renderTicketList() {
                     <div class="flex gap-3 md:gap-4 w-full">
                         <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-black text-xs uppercase shrink-0">${pelanggan.substring(0,2)}</div>
                         <div class="overflow-hidden">
-                            <h3 class="font-bold text-slate-900 text-sm md:text-base truncate">${t.masalah || t.Masalah || 'Isu Teknis Tidak Terdefinisi'}</h3>
+                            <h3 class="font-bold text-slate-900 text-sm md:text-base truncate">${t.masalah || t.Masalah || 'Penanganan Kendala Teknis'}</h3>
                             <p class="text-xs text-slate-500 truncate">${pelanggan}</p>
                         </div>
                     </div>

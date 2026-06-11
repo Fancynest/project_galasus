@@ -176,22 +176,22 @@ function renderTicketTable(data) {
 
         tbody.insertAdjacentHTML('beforeend', `
             <tr class="hover:bg-slate-50/70 transition-colors border-b border-slate-50">
-                <td class="px-4 md:px-6 py-3 md:py-4 font-bold text-slate-700 text-[11px] md:text-xs tracking-tight">${noTiket}</td>
-                <td class="px-4 md:px-6 py-3 md:py-4">
+                <td class="px-3 py-3 md:py-4 font-bold text-slate-700 text-[11px] md:text-xs tracking-tight truncate">${noTiket}</td>
+                <td class="px-3 py-3 md:py-4 truncate">
                     <div class="flex flex-col gap-1.5">
-                        <span class="text-xs md:text-sm font-bold text-slate-900">${pelanggan}</span>
+                        <span class="text-xs md:text-sm font-bold text-slate-900 truncate">${pelanggan}</span>
                         <div>${statusBadge}</div>
                     </div>
                 </td>
-                <td class="px-4 md:px-6 py-3 md:py-4 text-[11px] md:text-xs text-slate-600 truncate max-w-[150px] md:max-w-[200px] leading-relaxed" title="${masalah}">${masalah}</td>
-                <td class="px-4 md:px-6 py-3 md:py-4 text-center">
+                <td class="px-3 py-3 md:py-4 text-[11px] md:text-xs text-slate-600 truncate max-w-[150px] md:max-w-[200px] leading-relaxed" title="${masalah}">${masalah}</td>
+                <td class="px-3 py-3 md:py-4 text-center truncate">
                     <span class="px-2 py-1 rounded-[4px] font-black uppercase text-[9px] md:text-[10px] tracking-widest ${priorityClass}">${pRaw}</span>
                 </td>
-                <td class="px-4 md:px-6 py-3 md:py-4 text-center text-[10px] md:text-xs font-black tracking-tight ${slaClass}">
+                <td class="px-3 py-3 md:py-4 text-center text-[10px] md:text-xs font-black tracking-tight ${slaClass} truncate">
                     ${slaDisplay}
                 </td>
-                <td class="px-4 md:px-6 py-3 md:py-4 text-right text-[11px] md:text-xs font-bold text-slate-800">${t.teknisi_name || '<span class="text-slate-400 italic font-medium">Menunggu Alokasi</span>'}</td>
-                <td class="px-4 md:px-6 py-3 md:py-4 text-center">
+                <td class="px-3 py-3 md:py-4 text-right text-[11px] md:text-xs font-bold text-slate-800 truncate">${t.teknisi_name || '<span class="text-slate-400 italic font-medium">Menunggu Alokasi</span>'}</td>
+                <td class="px-3 py-3 md:py-4 text-center truncate whitespace-nowrap">
                     <button onclick="openDetailTiket(${t.id})" class="text-galasus-blue hover:text-blue-700 hover:bg-blue-50 p-1.5 md:p-2 rounded-lg border border-transparent hover:border-blue-200 transition-colors cursor-pointer mr-1" title="Detail & Progress Tiket">
                         <span class="material-symbols-outlined text-base md:text-lg">receipt_long</span>
                     </button>
@@ -502,12 +502,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Dual Search Handler (Mobile & Desktop)
     const handleSearch = (e) => {
-        const kw = e.target.value.toLowerCase();
-        const filtered = allTickets.filter(t => 
-            (t.no_tiket || '').toLowerCase().includes(kw) || 
-            (t.pelanggan || '').toLowerCase().includes(kw) || 
-            (t.masalah || '').toLowerCase().includes(kw)
-        );
+        const query = e.target.value.toLowerCase().trim();
+        if (!query) {
+            renderTicketTable(allTickets);
+            return;
+        }
+        const keywords = query.split(/\s+/);
+        const filtered = allTickets.filter(t => {
+            const searchableString = `
+                ${t.no_tiket || ''} 
+                ${t.pelanggan || ''} 
+                ${t.masalah || ''} 
+                ${t.teknisi || ''} 
+                ${t.status || ''}
+            `.toLowerCase();
+            return keywords.every(kw => searchableString.includes(kw));
+        });
         renderTicketTable(filtered);
     };
 
