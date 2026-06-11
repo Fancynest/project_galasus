@@ -771,6 +771,10 @@ func main() {
 		}
 
 		ticket.TeknisiID = targetUser.UserID
+		// Auto-accept: Jika tiket didelegasikan, statusnya otomatis berubah menjadi on-progress
+		if ticket.Status == "open" {
+			ticket.Status = "on-progress"
+		}
 		db.Save(&ticket)
 
 		logEntry := TicketLog{
