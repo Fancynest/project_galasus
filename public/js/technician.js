@@ -538,6 +538,13 @@ async function generatePDF(ticketId) {
     drawRow("INDEKS", "", true);
     drawRow("No. Registrasi Tiket", getVal(['NoTiket', 'no_tiket', 'ticket_id']));
     drawRow("Entitas Pelanggan", getVal(['Pelanggan', 'pelanggan']));
+    
+    let remainingQuota = "Layanan Non-Terdaftar";
+    if (t.client_quota !== null && t.client_quota !== undefined) {
+        remainingQuota = `${Math.max(0, t.client_quota - t.client_used)} dari ${t.client_quota} Tiket`;
+    }
+    drawRow("Sisa Kuota Layanan", remainingQuota);
+    
     drawRow("Sifat Penanganan", getVal(['LokasiPengerjaan', 'lokasi', 'lokasi_pengerjaan']));
     drawRow("Keluhan/Insiden", getVal(['Masalah', 'masalah', 'issue_description']));
     drawRow("Hasil Diagnostik", getVal(['Diagnostik', 'diagnostik']));

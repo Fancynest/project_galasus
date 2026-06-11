@@ -664,8 +664,9 @@ func main() {
 		role := claims["role"].(string)
 		userID := int(claims["user_id"].(float64))
 
-		query := db.Table("tickets").Select("tickets.*, users.full_name as teknisi_name").
-			Joins("left join users on users.user_id = tickets.assigned_user_id")
+		query := db.Table("tickets").Select("tickets.*, users.full_name as teknisi_name, clients.ticket_quota as client_quota, clients.ticket_used as client_used").
+			Joins("left join users on users.user_id = tickets.assigned_user_id").
+			Joins("left join clients on clients.client_id = tickets.client_id")
 
 		if role == "teknisi" {
 			query = query.Where("tickets.status = 'open' OR tickets.assigned_user_id = ? OR tickets.id IN (SELECT ticket_id FROM ticket_logs WHERE user_id = ?)", userID, userID)
