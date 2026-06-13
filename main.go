@@ -1002,7 +1002,7 @@ func main() {
 	clientGroup := e.Group("/clients", echojwt.WithConfig(jwtConfig), satpamMiddleware)
 	clientGroup.GET("", func(c echo.Context) error {
 		var clients []Client
-		db.Find(&clients)
+		db.Order("client_id desc").Find(&clients)
 		return c.JSON(200, clients)
 	})
 	clientGroup.POST("", func(c echo.Context) error {
