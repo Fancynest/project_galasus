@@ -719,6 +719,19 @@ func main() {
 		creatorRole := claims["role"].(string)
 		logSystemActivity(creatorID, creatorName, creatorRole, "Ticket", "Create Ticket", fmt.Sprintf("Membuat tiket bantuan baru: %s", t.NoTiket))
 
+		var technicians []User
+		db.Where("role IN ?", []string{"technician", "TECHNICIAN", "teknisi"}).Find(&technicians)
+		for _, tech := range technicians {
+			notif := Notification{
+				UserID:   tech.UserID,
+				Title:    "Tiket Baru Masuk: " + t.NoTiket,
+				Message:  fmt.Sprintf("Ada tiket baru dari %s yang menunggu alokasi.", t.Pelanggan),
+				IsRead:   false,
+				TicketID: t.ID,
+			}
+			db.Create(&notif)
+		}
+
 		return c.JSON(201, t)
 	})
 
@@ -1158,7 +1171,7 @@ func main() {
 		userID := int(claims["user_id"].(float64))
 
 		var notifs []Notification
-		db.Where("user_id = ?", userID).Order("is_read asc, created_at desc").Limit(50).Find(&notifs)
+		db.Where("user_id = ? AND is_read = false", userID).Order("created_at desc").Limit(50).Find(&notifs)
 		return c.JSON(200, notifs)
 	})
 
