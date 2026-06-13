@@ -857,7 +857,7 @@ func main() {
 		notif := Notification{
 			UserID:   targetUser.UserID,
 			Title:    "Penugasan Tiket Baru: " + ticket.NoTiket,
-			Message:  fmt.Sprintf("Tiket telah didelegasikan kepada Anda oleh %s.", currentUserName),
+			Message:  fmt.Sprintf("Admin %s telah memberikan tiket %s kepada teknisi %s", currentUserName, ticket.NoTiket, targetUser.FullName),
 			IsRead:   false,
 			TicketID: ticket.ID,
 		}
