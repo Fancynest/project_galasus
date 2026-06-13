@@ -693,9 +693,12 @@ func main() {
 			target := t.CreatedAt.Add(2 * time.Hour)
 			t.SLATarget = &target
 		}
-		var count int64
-		db.Model(&Ticket{}).Count(&count)
-		t.NoTiket = fmt.Sprintf("#SD-%d", 1024+count)
+		var lastTicket Ticket
+		if err := db.Order("id desc").First(&lastTicket).Error; err != nil {
+			t.NoTiket = "#SD-1025" // Fallback jika DB kosong
+		} else {
+			t.NoTiket = fmt.Sprintf("#SD-%d", 1024+lastTicket.ID+1)
+		}
 
 		if err := db.Create(&t).Error; err != nil {
 			return c.JSON(500, map[string]string{"message": err.Error()})

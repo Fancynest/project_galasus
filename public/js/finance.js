@@ -730,6 +730,21 @@ window.toggleManualClientFinance = function() {
     }
 }
 
+function handleSearch(e) {
+    const query = e.target.value.toLowerCase();
+    const keywords = query.split(/\s+/);
+    const filtered = allTransactions.filter(t => {
+        const searchableString = `
+            ${t.invoice_no || ''} 
+            ${t.client_vendor || ''} 
+            ${t.description || ''} 
+            ${t.status || ''}
+        `.toLowerCase();
+        return keywords.every(kw => searchableString.includes(kw));
+    });
+    renderTable(filtered);
+}
+
 // --- EVENT LISTENERS INISIALISASI ---
 document.addEventListener('DOMContentLoaded', () => {
     setupUI();

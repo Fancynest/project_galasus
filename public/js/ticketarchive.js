@@ -4,6 +4,7 @@
  */
 
 let archiveTickets = [];
+let filteredTickets = [];
 
 // Memuat pustaka SheetJS secara dinamis
 if (typeof XLSX === 'undefined') {
@@ -25,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             const keywords = query.split(/\s+/);
-            const filtered = archiveTickets.filter(t => {
+            filteredTickets = archiveTickets.filter(t => {
                 const searchableString = `
                     ${t.no_tiket || t.ticket_id || ''} 
                     ${t.pelanggan || t.Pelanggan || ''} 
@@ -35,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `.toLowerCase();
                 return keywords.every(kw => searchableString.includes(kw));
             });
-            renderArchiveTable(filtered);
+            renderArchiveTable(filteredTickets);
         });
     }
 
@@ -43,15 +44,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (dateInput) {
         dateInput.addEventListener('change', (e) => {
             const selectedDate = e.target.value; 
-            if (!selectedDate) return renderArchiveTable(archiveTickets);
-            const filtered = archiveTickets.filter(t => {
+            if (!selectedDate) {
+                filteredTickets = [...archiveTickets];
+                return renderArchiveTable(filteredTickets);
+            }
+            filteredTickets = archiveTickets.filter(t => {
                 const strDate = t.resolved_at || t.ResolvedAt || t.create_at || t.created_at || t.CreatedAt;
                 if (!strDate) return false;
                 const d = new Date(strDate);
                 const finishedDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
                 return finishedDate === selectedDate;
             });
-            renderArchiveTable(filtered);
+            renderArchiveTable(filteredTickets);
         });
     }
 });
@@ -84,7 +88,8 @@ async function loadArchiveData() {
             return s === 'closed' || s === 'resolved' || s === 'success' || s === 'selesai';
         });
 
-        renderArchiveTable(archiveTickets);
+        filteredTickets = [...archiveTickets];
+        renderArchiveTable(filteredTickets);
     } catch (err) {
         console.error("Gagal load archive:", err);
     }
@@ -130,8 +135,8 @@ function renderArchiveTable(data) {
 }
 
 function exportToExcel() {
-    if (archiveTickets.length === 0) return GalasusDialog.alert("Data kosong.");
-    const dataExcel = archiveTickets.map(t => ({
+    if (filteredTickets.length === 0) return GalasusDialog.alert("Data kosong.");
+    const dataExcel = filteredTickets.map(t => ({
         "Nomor Tiket": t.no_tiket || t.ticket_id,
         "Nama Klien": t.pelanggan || t.Pelanggan,
         "Masalah": t.masalah || t.Masalah || t.issue_description,
@@ -149,7 +154,8 @@ function exportToExcel() {
 function resetFilters() {
     document.getElementById('search-archive').value = '';
     document.getElementById('filter-date').value = '';
-    renderArchiveTable(archiveTickets);
+    filteredTickets = [...archiveTickets];
+    renderArchiveTable(filteredTickets);
 }
 
 async function viewDetail(id) {

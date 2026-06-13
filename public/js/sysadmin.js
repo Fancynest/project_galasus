@@ -291,6 +291,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const btnExport = document.getElementById('btn-export');
+    if (btnExport) {
+        btnExport.addEventListener('click', () => {
+            if (allUsersData.length === 0) return GalasusDialog.alert("Data pengguna kosong.");
+            const kw = ((searchInputDesk ? searchInputDesk.value : '') || (searchInputMob ? searchInputMob.value : '')).toLowerCase();
+            const role = document.getElementById('filter-role')?.value || 'all';
+            let filtered = allUsersData;
+            if (role !== 'all') filtered = filtered.filter(u => u.role === role);
+            if (kw) filtered = filtered.filter(u => u.full_name.toLowerCase().includes(kw) || u.email.toLowerCase().includes(kw));
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "ID,Nama Lengkap,Email,Peran,Status Aktif,Terakhir Aktif\n";
+            filtered.forEach(u => {
+                const row = [
+                    u.user_id,
+                    `"${u.full_name}"`,
+                    `"${u.email}"`,
+                    u.role,
+                    u.status,
+                    u.last_active || "-"
+                ];
+                csvContent += row.join(",") + "\n";
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Audit_IAM_${new Date().getTime()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    }
+
     const formReg = document.getElementById('form-register');
     if(formReg) {
         formReg.addEventListener('submit', async (e) => {
