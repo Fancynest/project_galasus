@@ -9,6 +9,9 @@
  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+ <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+ <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
  
  <script id="tailwind-config">
  tailwind.config = {
@@ -122,7 +125,7 @@
  </div>
  <div>
  <label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Periode Selesai</label>
- <input id="filter-date" type="date" class="w-full bg-white border-slate-200 rounded-xl text-sm px-4 py-2.5 outline-none focus:ring-2 focus:ring-galasus-blue/20">
+ <input id="filter-date" type="text" class="w-full bg-white border-slate-200 rounded-xl text-sm px-4 py-2.5 outline-none focus:ring-2 focus:ring-galasus-blue/20" placeholder="Pilih Tanggal...">
  </div>
  <div class="flex justify-end">
  <button onclick="resetFilters()" class="px-6 py-2.5 text-xs font-bold text-slate-500 hover:text-galasus-blue transition-colors uppercase tracking-widest">Reset Filter</button>

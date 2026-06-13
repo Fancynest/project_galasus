@@ -42,20 +42,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const dateInput = document.getElementById('filter-date');
     if (dateInput) {
-        dateInput.addEventListener('change', (e) => {
-            const selectedDate = e.target.value; 
-            if (!selectedDate) {
-                filteredTickets = [...archiveTickets];
-                return renderArchiveTable(filteredTickets);
+        flatpickr(dateInput, {
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d/m/Y",
+            locale: "id",
+            onChange: function(selectedDates, dateStr, instance) {
+                const selectedDate = dateStr; 
+                if (!selectedDate) {
+                    filteredTickets = [...archiveTickets];
+                    return renderArchiveTable(filteredTickets);
+                }
+                filteredTickets = archiveTickets.filter(t => {
+                    const strDate = t.resolved_at || t.ResolvedAt || t.create_at || t.created_at || t.CreatedAt;
+                    if (!strDate) return false;
+                    const d = new Date(strDate);
+                    const finishedDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                    return finishedDate === selectedDate;
+                });
+                renderArchiveTable(filteredTickets);
             }
-            filteredTickets = archiveTickets.filter(t => {
-                const strDate = t.resolved_at || t.ResolvedAt || t.create_at || t.created_at || t.CreatedAt;
-                if (!strDate) return false;
-                const d = new Date(strDate);
-                const finishedDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-                return finishedDate === selectedDate;
-            });
-            renderArchiveTable(filteredTickets);
         });
     }
 });
@@ -153,7 +159,12 @@ function exportToExcel() {
 
 function resetFilters() {
     document.getElementById('search-archive').value = '';
-    document.getElementById('filter-date').value = '';
+    const dateInput = document.getElementById('filter-date');
+    if (dateInput && dateInput._flatpickr) {
+        dateInput._flatpickr.clear();
+    } else if (dateInput) {
+        dateInput.value = '';
+    }
     filteredTickets = [...archiveTickets];
     renderArchiveTable(filteredTickets);
 }
