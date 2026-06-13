@@ -7,7 +7,7 @@ let notificationInterval = null;
 
 // Template untuk popover notifikasi
 const notifPopoverHTML = `
-<div id="notif-dropdown" class="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100 hidden z-50 transform origin-top-right transition-all duration-200 opacity-0 scale-95">
+<div id="notif-dropdown" class="fixed left-4 right-4 sm:absolute sm:left-auto sm:right-0 top-[70px] sm:top-full mt-2 sm:w-80 bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100 hidden z-50 transform origin-top sm:origin-top-right transition-all duration-200 opacity-0 scale-95">
     <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-xl">
         <h3 class="font-bold text-slate-800 text-sm">Notifikasi</h3>
     </div>
