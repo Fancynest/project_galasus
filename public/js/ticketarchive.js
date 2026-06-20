@@ -15,6 +15,7 @@ if (typeof XLSX === 'undefined') {
 
 document.addEventListener('DOMContentLoaded', () => {
     setupHeader();
+    setupMobileSidebar();
     loadArchiveData();
 
     const searchInput = document.getElementById('search-archive');
@@ -494,3 +495,20 @@ window.deleteArchive = async function(id) {
         showNotification('Terjadi kesalahan jaringan saat menghapus arsip.', 'error');
     }
 };
+
+// FUNGSI: Kontrol Sidebar Mobile
+function setupMobileSidebar() {
+    const btnOpen = document.getElementById('open-sidebar-btn');
+    const btnClose = document.getElementById('close-sidebar-btn');
+    const sidebar = document.getElementById('mobile-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+
+    const toggleMenu = () => {
+        if(sidebar) sidebar.classList.toggle('-translate-x-full');
+        if(overlay) overlay.classList.toggle('hidden');
+    };
+
+    if(btnOpen) btnOpen.onclick = toggleMenu;
+    if(btnClose) btnClose.onclick = toggleMenu;
+    if(overlay) overlay.onclick = toggleMenu;
+}
