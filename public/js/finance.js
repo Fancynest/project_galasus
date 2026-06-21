@@ -1,7 +1,32 @@
 /**
- * finance.js
- * Modul Operasional Keuangan Galasus (Enterprise Edition)
- * Updated: UI Responsive & Formal Wording Integration
+ * =============================================================================
+ * finance.js — MODUL KEUANGAN (Financial Management)
+ * =============================================================================
+ *
+ * Digunakan di: /views/financemng.html
+ * Bisa diakses oleh role: "super admin", "finance"
+ *
+ * FUNGSI UTAMA:
+ *   1. Menampilkan 5 kartu metrik keuangan (Total Pendapatan, Pengeluaran, Piutang, Laba, Kontrak)
+ *   2. Tabel histori transaksi akuntansi (Income & Expense) + filter rentang waktu
+ *   3. Registrasi transaksi baru (Piutang Usaha / Hutang Usaha) via modal form
+ *   4. Update status pembayaran (Pending → Lunas)
+ *   5. Grafik kesehatan penagihan (rasio lunas vs menunggak) — visual progress bar
+ *   6. Alokasi anggaran / proyeksi beban mendatang (CRUD)
+ *   7. Eksekusi proyeksi → Otomatis berubah menjadi transaksi Expense
+ *   8. Export Buku Besar ke PDF (menggunakan jsPDF + AutoTable, diproses di browser)
+ *
+ * API ENDPOINTS YANG DIPANGGIL:
+ *   - GET    /transactions         → Daftar transaksi (dengan filter ?range=)
+ *   - POST   /transactions         → Buat transaksi baru
+ *   - PUT    /transactions/:id     → Update status pembayaran
+ *   - GET    /projections          → Daftar proyeksi anggaran
+ *   - POST   /projections          → Buat proyeksi baru
+ *   - PUT    /projections/:id      → Edit proyeksi
+ *   - DELETE /projections/:id      → Hapus proyeksi
+ *   - POST   /projections/:id/execute → Eksekusi jadi pengeluaran nyata
+ *   - GET    /clients              → Daftar klien (untuk dropdown)
+ * =============================================================================
  */
 
 let allTransactions = [];

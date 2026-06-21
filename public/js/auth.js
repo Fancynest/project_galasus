@@ -1,6 +1,30 @@
 /**
- * auth.js
- * Sistem Kontrol Akses dan Autentikasi Galasus (Enterprise Grade)
+ * =============================================================================
+ * auth.js — SISTEM KONTROL AKSES & AUTENTIKASI GALASUS
+ * =============================================================================
+ * 
+ * File ini WAJIB dimuat di SETIAP halaman (kecuali login.html).
+ * Disisipkan di HTML: <script src="/public/js/auth.js"></script>
+ *
+ * FUNGSI UTAMA:
+ *   1. Cek token JWT di localStorage — jika tidak ada, redirect ke login.
+ *   2. Intercept semua fetch() — jika server return 401 (expired/suspended),
+ *      otomatis logout paksa dan redirect ke login.
+ *   3. Heartbeat setiap 15 detik — menjaga sesi tetap hidup dan mendeteksi
+ *      jika akun di-suspend oleh admin saat sedang aktif.
+ *   4. Role-Based Access Control (RBAC) — mencegah user mengakses halaman
+ *      yang bukan haknya (misal: teknisi tidak boleh buka /financemng).
+ *
+ * ALUR PROTEKSI HALAMAN:
+ *   - Super Admin → Akses semua halaman
+ *   - Finance     → Hanya /financemng
+ *   - Teknisi     → Hanya /technician dan /servicedesk
+ *
+ * FUNGSI-FUNGSI:
+ *   - pindahinKeDashboard(role) → Redirect user ke dashboard sesuai role
+ *   - cekHakAksesRuangan(path, role) → Validasi apakah user boleh buka halaman ini
+ *   - logoutPaksa() → Hapus token & redirect ke login
+ * =============================================================================
  */
 
 const token = localStorage.getItem('galasus_token');

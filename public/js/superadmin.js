@@ -1,3 +1,28 @@
+/**
+ * =============================================================================
+ * superadmin.js — DASBOR EKSEKUTIF (Pusat Komando Super Admin)
+ * =============================================================================
+ *
+ * Digunakan di: /views/superadmin.html
+ * Hanya bisa diakses oleh role: "super admin"
+ *
+ * FUNGSI UTAMA:
+ *   1. Menampilkan 4 metrik statistik utama (Klien Aktif, Tiket, Pendapatan, Insiden Kritis)
+ *   2. Render tabel Monitoring Utilisasi Kuota Klien (progress bar konsumsi tiket)
+ *   3. Render tabel CCTV Aplikasi / Audit Trail (log semua aktivitas user)
+ *   4. Export log audit ke PDF (menggunakan jsPDF + AutoTable, diproses di browser)
+ *
+ * API ENDPOINTS YANG DIPANGGIL:
+ *   - GET /api/dashboard    → Data statistik & daftar klien terbaru
+ *   - GET /audit-logs       → Log aktivitas untuk CCTV Aplikasi
+ *
+ * FUNGSI-FUNGSI:
+ *   - setupMobileSidebar()  → Toggle sidebar hamburger menu di mobile
+ *   - toggleCustomDates()   → Tampilkan/sembunyikan input tanggal kustom filter CCTV
+ *   - getCCTVFilterDates()  → Hitung rentang tanggal berdasarkan filter yang dipilih
+ *   - downloadCCTVLogs()    → Fetch log audit & generate PDF (client-side)
+ * =============================================================================
+ */
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[SISTEM] Menginisialisasi modul Dasbor Eksekutif...');
     setupMobileSidebar();

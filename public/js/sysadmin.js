@@ -1,6 +1,33 @@
 /**
- * sysadmin.js - V12 (ENTERPRISE EDITION)
- * FIXED: Security Protocols, Responsive Handlers, and Formal UI Dialect.
+ * =============================================================================
+ * sysadmin.js — SYSTEM ADMIN / IAM (Identity & Access Management)
+ * =============================================================================
+ *
+ * Digunakan di: /views/systemadmin.html
+ * Hanya bisa diakses oleh role: "super admin"
+ *
+ * FUNGSI UTAMA:
+ *   1. Menampilkan tabel seluruh user sistem (Admin, Teknisi, Finance) + search
+ *   2. Registrasi user baru (nama, email korporat, role) — password default: "Galasus123!"
+ *   3. Edit profil user (nama, email, role)
+ *   4. Suspend / Aktifkan kembali akun user
+ *   5. Reset password user ke default sistem
+ *   6. Hapus akun user (dengan proteksi: tidak bisa hapus akun sendiri)
+ *   7. Menampilkan monitoring server real-time: RAM Usage & Uptime VPS
+ *
+ * API ENDPOINTS YANG DIPANGGIL:
+ *   - GET    /users               → Daftar semua user
+ *   - POST   /register            → Registrasi user baru
+ *   - PUT    /users/:id           → Edit profil user
+ *   - PUT    /users/:id/reset-password → Reset password ke default
+ *   - DELETE /users/:id           → Hapus user
+ *   - GET    /api/system/metrics  → Data monitoring server (RAM & Uptime)
+ *
+ * DOMAIN EMAIL YANG DIIZINKAN:
+ *   - @galasus.com → Super Admin / Admin
+ *   - @teknisi     → Teknisi Lapangan
+ *   - @finance     → Keuangan
+ * =============================================================================
  */
 
 let allUsersData = []; 

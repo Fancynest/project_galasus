@@ -1,6 +1,32 @@
 /**
- * technician.js - Galasus Technician Portal
- * UPDATED: Responsive Mobile Navbar & Enterprise Wording
+ * =============================================================================
+ * technician.js — PORTAL TEKNISI LAPANGAN (Technician Dashboard)
+ * =============================================================================
+ *
+ * Digunakan di: /views/technician.html
+ * Hanya bisa diakses oleh role: "teknisi" (dan "super admin" untuk monitoring)
+ *
+ * FUNGSI UTAMA:
+ *   1. Menampilkan daftar tiket (antrean open + on-progress milik teknisi)
+ *   2. Teknisi bisa "Ambil" tiket open → status berubah ke on-progress
+ *   3. Menampilkan form laporan penyelesaian tiket:
+ *      - Sifat pengerjaan (Online / On-Site)
+ *      - Analisis diagnostik & tindakan korektif
+ *      - Laporan perangkat/inventaris
+ *      - Upload foto bukti sebelum & sesudah (ke /public/uploads/)
+ *   4. Menampilkan timeline progres tiket + form input catatan harian
+ *   5. Delegasi tiket ke teknisi lain (handoff)
+ *   6. Riwayat tiket selesai (tab Riwayat Penyelesaian)
+ *
+ * API ENDPOINTS YANG DIPANGGIL:
+ *   - GET    /tickets              → Daftar tiket (difilter by role di backend)
+ *   - PUT    /tickets/take/:id     → Teknisi ambil tiket
+ *   - POST   /tickets/report/:id   → Submit laporan akhir (multipart/form-data + foto)
+ *   - GET    /tickets/:id/logs     → Timeline progres tiket
+ *   - POST   /tickets/:id/logs     → Tambah catatan harian
+ *   - PUT    /tickets/:id/assign   → Handoff/delegasi ke teknisi lain
+ *   - GET    /technicians          → Daftar teknisi (untuk dropdown delegasi)
+ * =============================================================================
  */
 
 let allTickets = [];

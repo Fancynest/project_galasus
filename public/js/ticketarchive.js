@@ -1,6 +1,30 @@
 /**
- * ticketarchive.js
- * FINAL FIX: Tanggal Akurat & Full Export Excel
+ * =============================================================================
+ * ticketarchive.js — ARSIP TIKET SELESAI (Ticket Archive)
+ * =============================================================================
+ *
+ * Digunakan di: /views/ticketarchive.html
+ * Bisa diakses oleh role: "super admin", "teknisi"
+ *
+ * FUNGSI UTAMA:
+ *   1. Menampilkan tabel semua tiket berstatus "closed" / "resolved" / "success"
+ *   2. Filter & pencarian berdasarkan ID tiket, pelanggan, atau teknisi
+ *   3. Filter berdasarkan rentang tanggal (format dd/mm/yy)
+ *   4. Sorting ascending (tiket terbaru di atas)
+ *   5. Preview detail tiket + timeline lengkap (modal)
+ *   6. Generate Berita Acara Penyelesaian (BAP) — Preview + Cetak PDF (jsPDF, client-side)
+ *   7. Export seluruh arsip ke file Excel (.xlsx)
+ *   8. Navigasi mobile sidebar
+ *
+ * API ENDPOINTS YANG DIPANGGIL:
+ *   - GET /tickets          → Daftar semua tiket (difilter status closed di JS)
+ *   - GET /tickets/:id/logs → Timeline progres tiket
+ *   - GET /technicians      → Daftar teknisi (untuk menampilkan nama)
+ *
+ * CATATAN PENTING:
+ *   - BAP di-generate murni di browser (client-side) menggunakan jsPDF
+ *   - Ini menghindari beban CPU di server production
+ * =============================================================================
  */
 
 let archiveTickets = [];

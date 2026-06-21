@@ -1,3 +1,26 @@
+/**
+ * =============================================================================
+ * login.js — HALAMAN LOGIN & AUTENTIKASI AWAL
+ * =============================================================================
+ *
+ * Digunakan di: /views/login.html
+ *
+ * FUNGSI UTAMA:
+ *   1. Mengirim email & password ke POST /login (backend)
+ *   2. Menyimpan JWT token & role ke localStorage
+ *   3. Mendeteksi first-login → memaksa user ganti password default
+ *   4. Redirect ke dashboard sesuai role (Super Admin / Teknisi / Finance)
+ *
+ * ALUR LOGIN:
+ *   User input email+password → POST /login → Dapat JWT token
+ *   → Cek is_first_login → Jika true, muncul dialog ganti password
+ *   → Simpan token ke localStorage → Redirect ke dashboard sesuai role
+ *
+ * KEAMANAN:
+ *   - Password default "Galasus123!" wajib diganti saat first login
+ *   - Token JWT kedaluwarsa otomatis setelah 24 jam (diatur di backend)
+ * =============================================================================
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     const alertBox = document.getElementById('alert-box');

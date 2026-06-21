@@ -1,3 +1,44 @@
+/*
+=============================================================================
+  main.go — BACKEND INTI SISTEM GALASUS IT PARTNER SOLUSINDO
+=============================================================================
+
+  File ini adalah satu-satunya file backend (monolith). Seluruh API endpoint,
+  model database, middleware keamanan, dan logika bisnis terpusat di sini.
+
+  TECH STACK:
+    - Bahasa: Go (Golang)
+    - Framework Web: Echo v4 (routing & HTTP handler)
+    - ORM: GORM (interaksi database, auto-migration)
+    - Database: MariaDB (MySQL-compatible)
+    - Autentikasi: JWT (JSON Web Tokens) + bcrypt hashing
+    - Keamanan: Rate Limiter (20 req/sec), CORS, Satpam Middleware
+    - Monitoring: gopsutil (RAM usage, server uptime)
+
+  CARA MENJALANKAN:
+    1. Pastikan MariaDB aktif di port 3306
+    2. Jalankan: go run main.go
+    3. Atau build dulu: go build -o galasus_app main.go && ./galasus_app
+    4. Aplikasi berjalan di http://127.0.0.1:8081
+
+  GRUP API ROUTE:
+    - POST /login .................... Autentikasi & generate JWT
+    - POST /change-password .......... Ganti password (wajib saat first login)
+    - GET  /heartbeat ................ Health check (cek koneksi)
+    - GET  /api/system/metrics ....... Monitoring RAM & uptime server
+    - ADMIN GROUP .................... CRUD Users, Dashboard, Audit Logs
+    - FINANCE GROUP .................. CRUD Transaksi & Proyeksi Anggaran
+    - TICKET GROUP ................... CRUD Tiket, Log, Assign, Extend SLA
+    - CLIENT GROUP (/clients) ........ CRUD Klien, Aktivasi/Deaktivasi, Report
+    - NOTIFICATION ................... Ambil & tandai notifikasi
+
+  DEPLOYMENT (VPS):
+    cd /var/www/project_galasus && git checkout . && git pull origin main
+    && /usr/local/go/bin/go build -o galasus_app main.go
+    && systemctl restart galasus
+
+=============================================================================
+*/
 package main
 
 import (
@@ -24,21 +65,36 @@ import (
 	"github.com/shirou/gopsutil/v3/mem"
 )
 
+// =============================================================================
+// MODEL DATABASE — Representasi tabel-tabel di MariaDB
+// Setiap struct di bawah ini dipetakan ke satu tabel oleh GORM.
+// Tag `gorm:"..."` mengatur nama kolom, dan `json:"..."` mengatur output API.
+// =============================================================================
+
+// User — Tabel `users`
+// Menyimpan data seluruh pengguna sistem (Super Admin, Admin, Finance, Teknisi).
+// Field Password menggunakan tag `json:"-"` agar TIDAK pernah dikirim ke frontend.
+// Role: "super admin", "admin", "finance", "teknisi"
+// Status: "active" atau "suspended"
 type User struct {
 	UserID       int        `gorm:"primaryKey;column:user_id;autoIncrement" json:"user_id"`
 	FullName     string     `gorm:"column:full_name" json:"full_name"`
 	Email        string     `gorm:"column:email" json:"email"`
-	Password     string     `gorm:"column:password" json:"-"`
+	Password     string     `gorm:"column:password" json:"-"` // PENTING: "-" = tidak pernah tampil di JSON response
 	Role         string     `gorm:"column:role" json:"role"`
 	Status       string     `gorm:"column:status" json:"status"`
-	IsFirstLogin bool       `gorm:"column:is_first_login" json:"is_first_login"`
+	IsFirstLogin bool       `gorm:"column:is_first_login" json:"is_first_login"` // true = user wajib ganti password
 	LastActive   *time.Time `gorm:"column:last_active" json:"last_active"`
 }
 
+// Transaction — Tabel `transactions`
+// Menyimpan riwayat transaksi keuangan (piutang/hutang).
+// InvoiceNo otomatis di-generate: "INV/2026/001" (Income) atau "EXP/2026/001" (Expense)
+// Status: "Pending" (belum lunas), "Lunas" (sudah dibayar)
 type Transaction struct {
 	TransactionID int       `gorm:"primaryKey;column:transaction_id" json:"transaction_id"`
 	InvoiceNo     string    `gorm:"column:invoice_no;unique" json:"invoice_no"`
-	Type          string    `gorm:"column:type" json:"type"`
+	Type          string    `gorm:"column:type" json:"type"` // "Income" atau "Expense"
 	ClientVendor  string    `gorm:"column:client_vendor" json:"client_vendor"`
 	Amount        float64   `gorm:"column:amount" json:"amount"`
 	Description   string    `gorm:"column:description" json:"description"`
@@ -47,6 +103,9 @@ type Transaction struct {
 	Status        string    `gorm:"column:status;default:'Pending'" json:"status"`
 }
 
+// Projection — Tabel `projections`
+// Menyimpan rencana anggaran/beban di masa depan.
+// Jika dieksekusi, data akan berpindah menjadi Transaction bertipe "Expense".
 type Projection struct {
 	ProjectionID int       `gorm:"primaryKey;column:projection_id" json:"projection_id"`
 	Title        string    `gorm:"column:title" json:"title"`
@@ -55,69 +114,93 @@ type Projection struct {
 	Category     string    `gorm:"column:category" json:"category"`
 }
 
+// Ticket — Tabel `tickets`
+// Tabel transaksional utama sistem Service Desk.
+// NoTiket: ID unik format "#SD-1025" (auto-generated)
+// Status: "open" → "on-progress" → "closed"
+// SLATarget: Dihitung otomatis dari CreatedAt + SLA (jam)
+// ClientID: FK ke tabel clients (nullable, untuk klien guest)
+// FotoBefore/FotoAfter: Path ke file bukti foto di /public/uploads/
 type Ticket struct {
 	ID               int        `gorm:"primaryKey;column:id;autoIncrement" json:"id"`
-	NoTiket          string     `gorm:"column:ticket_id" json:"no_tiket"`
-	Pelanggan        string     `gorm:"column:pelanggan" json:"pelanggan"`
-	Masalah          string     `gorm:"column:issue_description" json:"masalah"`
-	Prioritas        string     `gorm:"column:priority" json:"prioritas"`
-	SLA              string     `gorm:"column:sla" json:"sla"`
-	SLATarget        *time.Time `gorm:"column:sla_target" json:"sla_target"`
-	TeknisiID        int        `gorm:"column:assigned_user_id" json:"teknisi_id"`
-	Status           string     `gorm:"column:status" json:"status"`
+	NoTiket          string     `gorm:"column:ticket_id" json:"no_tiket"`         // Auto: "#SD-1025"
+	Pelanggan        string     `gorm:"column:pelanggan" json:"pelanggan"`        // Nama klien (tampilan)
+	Masalah          string     `gorm:"column:issue_description" json:"masalah"`  // Deskripsi masalah
+	Prioritas        string     `gorm:"column:priority" json:"prioritas"`         // "Kritis", "Tinggi", "Info"
+	SLA              string     `gorm:"column:sla" json:"sla"`                    // Durasi SLA dalam jam
+	SLATarget        *time.Time `gorm:"column:sla_target" json:"sla_target"`      // Batas waktu SLA
+	TeknisiID        int        `gorm:"column:assigned_user_id" json:"teknisi_id"` // FK ke users.user_id
+	Status           string     `gorm:"column:status" json:"status"`              // open, on-progress, closed
 	CreatedAt        time.Time  `gorm:"column:create_at;autoCreateTime:false" json:"created_at"`
-	Diagnostik       string     `gorm:"column:diagnostik" json:"diagnostik"`
-	Tindakan         string     `gorm:"column:tindakan" json:"tindakan"`
-	Inventaris       string     `gorm:"column:inventaris" json:"inventaris"`
-	FotoBefore       string     `gorm:"column:foto_before" json:"foto_before"`
-	FotoAfter        string     `gorm:"column:foto_after" json:"foto_after"`
+	Diagnostik       string     `gorm:"column:diagnostik" json:"diagnostik"`       // Isi laporan teknisi
+	Tindakan         string     `gorm:"column:tindakan" json:"tindakan"`           // Tindakan korektif
+	Inventaris       string     `gorm:"column:inventaris" json:"inventaris"`       // Perangkat yg diganti
+	FotoBefore       string     `gorm:"column:foto_before" json:"foto_before"`     // Path foto kondisi awal
+	FotoAfter        string     `gorm:"column:foto_after" json:"foto_after"`       // Path foto hasil akhir
 	ResolvedAt       *time.Time `gorm:"column:resolved_at" json:"resolved_at"`
-	LokasiPengerjaan string     `gorm:"column:lokasi_pengerjaan" json:"lokasi_pengerjaan"`
-	ClientID         *int       `gorm:"column:client_id" json:"client_id"`
+	LokasiPengerjaan string     `gorm:"column:lokasi_pengerjaan" json:"lokasi_pengerjaan"` // "Online" / "Di Lokasi"
+	ClientID         *int       `gorm:"column:client_id" json:"client_id"`         // FK ke clients (nullable)
 }
 
+// TicketLog — Tabel `ticket_logs`
+// Timeline/riwayat pengerjaan setiap tiket.
+// Setiap aksi (ambil tiket, update progres, delegasi) akan tercatat di sini.
+// ActionType: "Diambil Alih", "Update Progress", "Handoff", "Update SLA"
 type TicketLog struct {
 	LogID       int       `gorm:"primaryKey;column:log_id;autoIncrement" json:"log_id"`
-	TicketID    int       `gorm:"column:ticket_id;index" json:"ticket_id"`
-	UserID      int       `gorm:"column:user_id" json:"user_id"`
+	TicketID    int       `gorm:"column:ticket_id;index" json:"ticket_id"` // FK ke tickets.id
+	UserID      int       `gorm:"column:user_id" json:"user_id"`           // FK ke users.user_id
 	UserName    string    `gorm:"column:user_name" json:"user_name"`
 	ActionType  string    `gorm:"column:action_type" json:"action_type"`
 	Description string    `gorm:"column:description" json:"description"`
 	CreatedAt   time.Time `gorm:"column:created_at;autoCreateTime" json:"created_at"`
 }
 
+// SystemLog — Tabel `system_logs` ("CCTV Aplikasi")
+// Merekam SEMUA aktivitas pengguna secara global untuk kebutuhan audit.
+// Tidak ada API untuk menghapus log ini — data hanya bertambah (append-only).
+// Module: "System", "User Management", "Finance", "Ticket", "Service Desk", "Client Management"
 type SystemLog struct {
 	LogID       int       `gorm:"primaryKey;column:log_id;autoIncrement" json:"log_id"`
 	UserID      int       `gorm:"column:user_id;index" json:"user_id"`
 	UserName    string    `gorm:"column:user_name" json:"user_name"`
 	Role        string    `gorm:"column:role" json:"role"`
-	Module      string    `gorm:"column:module" json:"module"`
-	Action      string    `gorm:"column:action" json:"action"`
+	Module      string    `gorm:"column:module" json:"module"`     // Modul yang diakses
+	Action      string    `gorm:"column:action" json:"action"`     // Tipe aksi (Login, Create, Delete, dll)
 	Description string    `gorm:"column:description" json:"description"`
 	CreatedAt   time.Time `gorm:"column:created_at;autoCreateTime" json:"created_at"`
 }
 
+// Notification — Tabel `notifications`
+// Sistem lonceng/peringatan real-time.
+// Dikirim otomatis saat: tiket baru dibuat, tiket didelegasikan, atau ada update progres.
+// IsRead: false = belum dibaca (muncul di badge), true = sudah diklik user
 type Notification struct {
 	ID        int       `gorm:"primaryKey;column:id;autoIncrement" json:"id"`
-	UserID    int       `gorm:"column:user_id;index" json:"user_id"`
+	UserID    int       `gorm:"column:user_id;index" json:"user_id"`     // FK: siapa yang menerima notif
 	Title     string    `gorm:"column:title" json:"title"`
 	Message   string    `gorm:"column:message" json:"message"`
 	IsRead    bool      `gorm:"column:is_read;default:false" json:"is_read"`
-	TicketID  int       `gorm:"column:ticket_id;default:0" json:"ticket_id"`
+	TicketID  int       `gorm:"column:ticket_id;default:0" json:"ticket_id"` // FK: tiket terkait
 	CreatedAt time.Time `gorm:"column:created_at;autoCreateTime" json:"created_at"`
 }
 
+// Client — Tabel `clients`
+// Menyimpan data perusahaan mitra/klien beserta kontrak dan kuota SLA.
+// TicketQuota: Jumlah tiket yang boleh dibuat per kontrak
+// TicketUsed: Otomatis bertambah saat tiket dibuat untuk klien ini
+// Status: "active" atau "inactive"
 type Client struct {
 	ID            int       `gorm:"primaryKey;column:client_id;autoIncrement" json:"id"`
 	Name          string    `gorm:"column:company_name" json:"name"`
-	PIC           string    `gorm:"column:pic_technical_name" json:"pic"`
+	PIC           string    `gorm:"column:pic_technical_name" json:"pic"` // Person In Charge (PIC teknis)
 	Phone         string    `gorm:"column:phone" json:"phone"`
-	PackageType   string    `gorm:"column:package_type" json:"package_type"`
-	TicketQuota   int       `gorm:"column:ticket_quota" json:"ticket_quota"`
-	TicketUsed    int       `gorm:"column:ticket_used;default:0" json:"ticket_used"`
+	PackageType   string    `gorm:"column:package_type" json:"package_type"` // Tipe paket kontrak
+	TicketQuota   int       `gorm:"column:ticket_quota" json:"ticket_quota"` // Maks tiket per kontrak
+	TicketUsed    int       `gorm:"column:ticket_used;default:0" json:"ticket_used"` // Terpakai (auto-increment)
 	AddOnServices string    `gorm:"column:add_on_services" json:"add_on_services"`
 	ContractEnd   time.Time `gorm:"column:contract_end_date" json:"contract_end"`
-	Assets        string    `gorm:"column:assets" json:"assets"`
+	Assets        string    `gorm:"column:assets" json:"assets"` // Daftar aset milik klien
 	Status        string    `gorm:"column:status;default:'active'" json:"status"`
 }
 
@@ -1190,6 +1273,9 @@ func main() {
 	e.Logger.Fatal(e.Start("127.0.0.1:8081"))
 }
 
+// saveUploadedFile — Fungsi utilitas untuk menyimpan file upload (foto bukti tiket)
+// Digunakan oleh endpoint POST /tickets/report/:id
+// File disimpan ke folder /public/uploads/ dengan nama unik berbasis unix timestamp
 func saveUploadedFile(file *multipart.FileHeader, path string) error {
 	src, err := file.Open()
 	if err != nil {

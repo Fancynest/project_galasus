@@ -1,6 +1,31 @@
 /**
- * notifications.js
- * Sistem Notifikasi Real-time Galasus
+ * =============================================================================
+ * notifications.js — SISTEM NOTIFIKASI REAL-TIME (Lonceng Peringatan)
+ * =============================================================================
+ *
+ * Digunakan di: /views/technician.html, /views/servicedesk.html
+ * Dipanggil secara global oleh halaman yang membutuhkan fitur notifikasi.
+ *
+ * FUNGSI UTAMA:
+ *   1. Polling notifikasi baru setiap 10 detik (GET /notifications)
+ *   2. Menampilkan badge merah (dot) pada ikon lonceng jika ada notif belum dibaca
+ *   3. Render daftar notifikasi di dropdown panel
+ *   4. Tandai notifikasi sebagai "sudah dibaca" saat diklik (PUT /notifications/:id/read)
+ *   5. Animasi masuk/keluar dropdown notifikasi
+ *
+ * KAPAN NOTIFIKASI DIKIRIM (dari backend):
+ *   - Tiket baru dibuat → Semua teknisi dapat notif
+ *   - Tiket didelegasikan → Teknisi target dapat notif
+ *   - Update progres pada tiket → Teknisi pemegang tiket dapat notif
+ *
+ * API ENDPOINTS YANG DIPANGGIL:
+ *   - GET /notifications           → Daftar notif belum dibaca (max 50)
+ *   - PUT /notifications/:id/read  → Tandai notif sudah dibaca
+ *
+ * CARA PAKAI (di halaman lain):
+ *   <script src="/public/js/notifications.js"></script>
+ *   Lalu panggil: initNotifications() pada DOMContentLoaded
+ * =============================================================================
  */
 
 let notificationInterval = null;

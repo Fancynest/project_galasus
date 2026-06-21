@@ -1,3 +1,28 @@
+/**
+ * =============================================================================
+ * dialog.js — KOMPONEN UI DIALOG GLOBAL (Pengganti alert/confirm/prompt bawaan browser)
+ * =============================================================================
+ *
+ * Digunakan di: SEMUA halaman (dimuat sebelum script lain)
+ * Disisipkan di HTML: <script src="/public/js/dialog.js"></script>
+ *
+ * MENGAPA FILE INI ADA:
+ *   Browser bawaan punya alert(), confirm(), prompt() yang jelek dan blocking.
+ *   File ini menggantikannya dengan dialog berbasis Promise yang cantik,
+ *   menggunakan Tailwind CSS + animasi glassmorphism.
+ *
+ * METODE YANG TERSEDIA (global via GalasusDialog):
+ *   - GalasusDialog.alert(message)           → Notifikasi info (1 tombol OK)
+ *   - GalasusDialog.confirm(message)         → Konfirmasi Ya/Tidak (return true/false)
+ *   - GalasusDialog.prompt(message, default) → Input teks dari user (return string/null)
+ *   - GalasusDialog.promptSelect(msg, opts)  → Pilihan dropdown (return value/null)
+ *   - GalasusDialog.custom(html, width)      → Dialog custom HTML (untuk BAP, preview, dll)
+ *
+ * CARA PAKAI:
+ *   const result = await GalasusDialog.confirm("Yakin hapus data ini?");
+ *   if (result) { // user klik "Lanjutkan" }
+ * =============================================================================
+ */
 const GalasusDialog = (function() {
     function createOverlay() {
         const overlay = document.createElement('div');

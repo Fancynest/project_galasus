@@ -1,7 +1,33 @@
 /**
- * servicedesk.js
- * Pusat Kendali Layanan Bantuan Galasus (Enterprise Grade)
- * FIX: UI Responsif Handlers, Retensi Logika Klien & Penghapusan Tiket.
+ * =============================================================================
+ * servicedesk.js — PUSAT KENDALI INSIDEN / LAYANAN BANTUAN (Service Desk)
+ * =============================================================================
+ *
+ * Digunakan di: /views/servicedesk.html
+ * Bisa diakses oleh role: "super admin", "teknisi"
+ *
+ * FUNGSI UTAMA:
+ *   1. Menampilkan tabel antrean tiket aktif (open & on-progress)
+ *   2. Membuat tiket baru (modal form) — otomatis potong kuota klien
+ *   3. Melihat detail tiket + timeline riwayat (modal detail)
+ *   4. Menambah catatan progres pada tiket
+ *   5. Delegasi tiket ke teknisi lain (handoff)
+ *   6. Perpanjang batas SLA tiket
+ *   7. Hapus tiket (kuota klien dikembalikan)
+ *   8. Menampilkan statistik: Menunggu Alokasi, Dalam Penanganan, Pelanggaran SLA, Diselesaikan
+ *
+ * API ENDPOINTS YANG DIPANGGIL:
+ *   - GET    /tickets            → Daftar semua tiket
+ *   - POST   /tickets            → Buat tiket baru
+ *   - GET    /tickets/:id/logs   → Timeline riwayat tiket
+ *   - POST   /tickets/:id/logs   → Tambah catatan progres
+ *   - PUT    /tickets/:id/assign → Delegasi tiket ke teknisi
+ *   - PUT    /tickets/take/:id   → Teknisi mengambil tiket
+ *   - PUT    /tickets/:id/extend-sla → Perpanjang SLA
+ *   - DELETE /tickets/:id        → Hapus tiket
+ *   - GET    /clients            → Daftar klien (untuk dropdown pilih klien)
+ *   - GET    /technicians        → Daftar teknisi (untuk dropdown delegasi)
+ * =============================================================================
  */
 
 /**
