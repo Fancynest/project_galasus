@@ -1,4 +1,20 @@
 <!DOCTYPE html>
+<!--
+=============================================================================
+  login.html — HALAMAN AUTENTIKASI (Pintu Masuk Utama)
+=============================================================================
+  
+  FUNGSI UTAMA:
+    - Merupakan satu-satunya halaman publik tanpa pengecekan JWT (Bearer).
+    - Memuat antarmuka Login dengan input Email & Password.
+    - Script utama yang mengendalikan logika form adalah /public/js/login.js
+  
+  KEAMANAN:
+    - Semua permintaan ke backend menggunakan metode POST (/login).
+    - Jika pengguna berhasil login dan atribut is_first_login = true,
+      akan muncul dialog pergantian password.
+=============================================================================
+-->
 <html class="light" lang="id">
 <head>
  <meta charset="utf-8" />

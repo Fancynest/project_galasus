@@ -1,4 +1,20 @@
 <!DOCTYPE html>
+<!--
+=============================================================================
+  systemadmin.html — SYSTEM ADMIN / IAM (Identity & Access Management)
+=============================================================================
+  
+  FUNGSI UTAMA:
+    - Manajemen akun karyawan Galasus (Pembuatan akun, Edit, Suspend, Hapus).
+    - Menampilkan matriks pemantauan infrastruktur (Kesehatan Server: RAM & Uptime).
+    - Akses eksklusif: Hanya "super admin" yang dapat memasuki area ini.
+  
+  DEPEDENSI SCRIPT:
+    - /public/js/auth.js (WAJIB ADA - Mencegah akses tanpa otorisasi)
+    - /public/js/dialog.js (Untuk modal konfirmasi keamanan tingkat lanjut)
+    - /public/js/sysadmin.js (Inti penggerak CRUD pengguna & pemantauan server)
+=============================================================================
+-->
 <html class="light" lang="id">
 
 <head>

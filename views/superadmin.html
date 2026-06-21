@@ -1,4 +1,21 @@
 <!DOCTYPE html>
+<!--
+=============================================================================
+  superadmin.html — DASBOR EKSEKUTIF UTAMA (Super Admin)
+=============================================================================
+  
+  FUNGSI UTAMA:
+    - Merupakan "Pusat Komando" untuk pemilik sistem.
+    - Hanya bisa diakses jika localStorage "galasus_role" == "super admin".
+    - Menampilkan ringkasan metrik global, tabel utilizasi klien, dan CCTV Aplikasi.
+  
+  DEPEDENSI SCRIPT:
+    - /public/js/auth.js (WAJIB ADA - Mencegah akses tanpa token)
+    - /public/js/superadmin.js (Logika fetching metrik & CCTV)
+    - Taildwind CSS via CDN (styling)
+    - jsPDF & jsPDF-AutoTable via CDN (untuk fitur Ekspor Log Audit ke PDF)
+=============================================================================
+-->
 <html class="light" lang="id">
 <head>
  <meta charset="utf-8" />

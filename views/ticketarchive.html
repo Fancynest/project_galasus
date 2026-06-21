@@ -1,4 +1,23 @@
 <!DOCTYPE html>
+<!--
+=============================================================================
+  ticketarchive.html — ARSIP TIKET & BAP (Ticket Archive)
+=============================================================================
+  
+  FUNGSI UTAMA:
+    - Gudang arsip untuk tiket yang telah diselesaikan (Closed/Resolved).
+    - Fitur pencarian tingkat lanjut (berdasarkan ID tiket, klien, atau teknisi).
+    - Ekspor data arsip ke format Microsoft Excel (.xlsx).
+    - Peninjauan ulang Berita Acara Penyelesaian (BAP).
+  
+  DEPEDENSI SCRIPT:
+    - /public/js/auth.js
+    - /public/js/dialog.js
+    - /public/js/ticketarchive.js (Logika filter dan ekspor Excel)
+    - jsPDF (untuk preview BAP PDF)
+    - XLSX (SheetJS) via CDN (untuk fitur Ekspor ke Excel)
+=============================================================================
+-->
 <html class="light" lang="id">
 <head>
  <meta charset="utf-8" />

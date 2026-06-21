@@ -1,4 +1,22 @@
 <!DOCTYPE html>
+<!--
+=============================================================================
+  clientmanagement.html — MANAJEMEN KLIEN & KONTRAK
+=============================================================================
+  
+  FUNGSI UTAMA:
+    - Manajemen data pelanggan / klien (Hanya "super admin").
+    - Mengelola informasi paket SLA, aset, dan masa berlaku kontrak.
+    - Fitur penonaktifan akses layanan bagi klien bermasalah.
+    - Pembuatan Laporan Pelayanan (Service Report) bulanan per klien.
+  
+  DEPEDENSI SCRIPT:
+    - /public/js/auth.js
+    - /public/js/dialog.js
+    - /public/js/client.js (Mengatur logika CRUD dan perhitungan utilisasi kuota)
+    - jsPDF & jsPDF-AutoTable via CDN (untuk fitur Ekspor Service Report)
+=============================================================================
+-->
 <html class="light" lang="id">
 <head>
  <meta charset="utf-8" />
