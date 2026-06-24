@@ -217,8 +217,12 @@ type LoginRequest struct {
 }
 
 func main() {
-	// [MAINTENANCE] Konfigurasi koneksi ke Database (Berpindah ke MariaDB/MySQL untuk VPS)
-	dsn := "galasus:RahasiaGalasus2026@tcp(127.0.0.1:3306)/galasusdb?charset=utf8mb4&parseTime=True&loc=Local"
+	// [MAINTENANCE] Konfigurasi koneksi ke Database (Mendukung Docker & Lokal)
+	dbHost := os.Getenv("DB_HOST")
+	if dbHost == "" {
+		dbHost = "127.0.0.1" // Fallback jika dijalankan tanpa Docker
+	}
+	dsn := fmt.Sprintf("galasus:RahasiaGalasus2026@tcp(%s:3306)/galasusdb?charset=utf8mb4&parseTime=True&loc=Local", dbHost)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Gagal konek database: ", err)

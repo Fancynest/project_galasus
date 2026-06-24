@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: galasus_app
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_HOST=db
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - galasus_network
+    restart: always
+
+  db:
+    image: mariadb:10.11
+    container_name: galasus_db
+    environment:
+      - MARIADB_ROOT_PASSWORD=SuperSecretRoot123!
+      - MARIADB_DATABASE=galasusdb
+      - MARIADB_USER=galasus
+      - MARIADB_PASSWORD=RahasiaGalasus2026
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - galasus_network
+    restart: always
+
+networks:
+  galasus_network:
+    driver: bridge
+
+volumes:
+  mariadb_data:
