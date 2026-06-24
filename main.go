@@ -1274,7 +1274,7 @@ func main() {
 		return c.JSON(200, map[string]string{"message": "Notifikasi ditandai sudah dibaca"})
 	})
 
-	e.Logger.Fatal(e.Start("127.0.0.1:8081"))
+	e.Logger.Fatal(e.Start(":8081"))
 }
 
 // saveUploadedFile — Fungsi utilitas untuk menyimpan file upload (foto bukti tiket)
