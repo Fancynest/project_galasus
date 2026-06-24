@@ -1,5 +1,5 @@
 # Tahap 1: Build Image
-FROM golang:1.22-alpine AS builder
+FROM golang:1.26-alpine AS builder
 
 # Set working directory di dalam container
 WORKDIR /app
