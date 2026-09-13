@@ -1,26 +1,3 @@
-/**
- * =============================================================================
- * login.js — HALAMAN LOGIN & AUTENTIKASI AWAL
- * =============================================================================
- *
- * Digunakan di: /views/login.html
- *
- * FUNGSI UTAMA:
- *   1. Mengirim email & password ke POST /login (backend)
- *   2. Menyimpan JWT token & role ke localStorage
- *   3. Mendeteksi first-login → memaksa user ganti password default
- *   4. Redirect ke dashboard sesuai role (Super Admin / Teknisi / Finance)
- *
- * ALUR LOGIN:
- *   User input email+password → POST /login → Dapat JWT token
- *   → Cek is_first_login → Jika true, muncul dialog ganti password
- *   → Simpan token ke localStorage → Redirect ke dashboard sesuai role
- *
- * KEAMANAN:
- *   - Password default "Galasus123!" wajib diganti saat first login
- *   - Token JWT kedaluwarsa otomatis setelah 24 jam (diatur di backend)
- * =============================================================================
- */
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     const alertBox = document.getElementById('alert-box');
@@ -32,11 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputEmail = document.getElementById('email');
     const btnLupa = document.getElementById('lupa-sandi');
 
-    // FITUR LUPA KATA SANDI
     if (btnLupa) {
         btnLupa.addEventListener('click', async (e) => {
             e.preventDefault();
-            await GalasusDialog.alert("Waduh lupa sandi? Tenang, langsung kontak divisi Super Admin aja ya buat di-reset sandinya ke Galasus123!");
+            await GalasusDialog.alert("Silakan hubungi Administrator untuk mereset kata sandi akun Anda.");
         });
     }
 

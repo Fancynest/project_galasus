@@ -1,35 +1,3 @@
-/**
- * =============================================================================
- * client.js — MANAJEMEN KLIEN & KONTRAK (Client Management)
- * =============================================================================
- *
- * Digunakan di: /views/clientmanagement.html
- * Hanya bisa diakses oleh role: "super admin"
- *
- * FUNGSI UTAMA:
- *   1. Menampilkan tabel seluruh klien (aktif & nonaktif) dengan filter & search
- *   2. Registrasi klien baru (nama perusahaan, PIC, paket, kuota tiket, kontrak)
- *   3. Edit profil klien tanpa menghapus data historis
- *   4. Aktivasi / Deaktivasi status klien
- *   5. Menampilkan detail klien + daftar aset + riwayat tiket per bulan
- *   6. Generate laporan bulanan klien ke PDF (menggunakan jsPDF, diproses di browser)
- *
- * API ENDPOINTS YANG DIPANGGIL:
- *   - GET    /clients             → Daftar semua klien
- *   - POST   /clients             → Registrasi klien baru
- *   - PUT    /clients/:id         → Edit profil klien
- *   - PUT    /clients/:id/deactivate → Nonaktifkan klien
- *   - PUT    /clients/:id/activate   → Aktifkan kembali klien
- *   - GET    /clients/:id/report  → Laporan tiket klien per bulan/tahun
- * =============================================================================
- */
-
-/**
- * client.js
- * Modul Manajemen Klien
- * [MAINTENANCE] Modul ini menangani operasi CRUD untuk entitas klien dan lisensi.
- * Saat status klien diubah menjadi 'Inactive', maka otomatis lisensinya tidak akan dihitung di Dashboard Finance.
- */
 let allClients = [];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -123,7 +91,7 @@ async function loadClients() {
         renderTable(allClients);
         updateStats(allClients);
     } catch (err) {
-        console.error("Kegagalan memuat data klien:", err);
+        console.error("Failed to load clients:", err);
     }
 }
 

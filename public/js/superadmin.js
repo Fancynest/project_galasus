@@ -1,30 +1,4 @@
-/**
- * =============================================================================
- * superadmin.js — DASBOR EKSEKUTIF (Pusat Komando Super Admin)
- * =============================================================================
- *
- * Digunakan di: /views/superadmin.html
- * Hanya bisa diakses oleh role: "super admin"
- *
- * FUNGSI UTAMA:
- *   1. Menampilkan 4 metrik statistik utama (Klien Aktif, Tiket, Pendapatan, Insiden Kritis)
- *   2. Render tabel Monitoring Utilisasi Kuota Klien (progress bar konsumsi tiket)
- *   3. Render tabel CCTV Aplikasi / Audit Trail (log semua aktivitas user)
- *   4. Export log audit ke PDF (menggunakan jsPDF + AutoTable, diproses di browser)
- *
- * API ENDPOINTS YANG DIPANGGIL:
- *   - GET /api/dashboard    → Data statistik & daftar klien terbaru
- *   - GET /audit-logs       → Log aktivitas untuk CCTV Aplikasi
- *
- * FUNGSI-FUNGSI:
- *   - setupMobileSidebar()  → Toggle sidebar hamburger menu di mobile
- *   - toggleCustomDates()   → Tampilkan/sembunyikan input tanggal kustom filter CCTV
- *   - getCCTVFilterDates()  → Hitung rentang tanggal berdasarkan filter yang dipilih
- *   - downloadCCTVLogs()    → Fetch log audit & generate PDF (client-side)
- * =============================================================================
- */
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('[SISTEM] Menginisialisasi modul Dasbor Eksekutif...');
     setupMobileSidebar();
 
     const token = localStorage.getItem('galasus_token');
@@ -106,9 +80,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
     } catch (error) {
-        console.error('[SISTEM ERROR] Sinkronisasi telemetri gagal:', error);
+        console.error('Failed to load dashboard data:', error);
         const tbody = document.getElementById('tabel-klien-terbaru');
-        if(tbody) tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-error text-xs md:text-sm font-bold bg-red-50/50">Peringatan Kritis: Terputus dari peladen utama basis data.</td></tr>`;
+        if(tbody) tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-error text-xs md:text-sm font-bold bg-red-50/50">Gagal memuat data ringkasan.</td></tr>`;
     }
 
     // 3. Fetch Audit Logs (CCTV)
@@ -151,7 +125,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     } catch (error) {
-        console.error('[CCTV ERROR]', error);
+        console.error('Failed to load audit logs:', error);
         const logBody = document.getElementById('tabel-audit-log');
         if(logBody) logBody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-error text-xs md:text-sm font-bold bg-red-50/50">Gagal memuat log.</td></tr>`;
     }
