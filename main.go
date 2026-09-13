@@ -98,7 +98,7 @@ type Transaction struct {
 	ClientVendor  string    `gorm:"column:client_vendor" json:"client_vendor"`
 	Amount        float64   `gorm:"column:amount" json:"amount"`
 	Description   string    `gorm:"column:description" json:"description"`
-	IssueDate     time.Time `gorm:"column:issue_date;default:CURRENT_TIMESTAMP" json:"issue_date"`
+	IssueDate     time.Time `gorm:"column:issue_date;autoCreateTime" json:"issue_date"`
 	DueDate       time.Time `gorm:"column:due_date" json:"due_date"`
 	Status        string    `gorm:"column:status;default:'Pending'" json:"status"`
 }
@@ -222,7 +222,23 @@ func main() {
 	if dbHost == "" {
 		dbHost = "127.0.0.1" // Fallback jika dijalankan tanpa Docker
 	}
-	dsn := fmt.Sprintf("galasus:RahasiaGalasus2026@tcp(%s:3306)/galasusdb?charset=utf8mb4&parseTime=True&loc=Local", dbHost)
+	dbPort := os.Getenv("DB_PORT")
+	if dbPort == "" {
+		dbPort = "3306"
+	}
+	dbUser := os.Getenv("DB_USER")
+	if dbUser == "" {
+		dbUser = "galasus"
+	}
+	dbPassword := os.Getenv("DB_PASSWORD")
+	if dbPassword == "" {
+		dbPassword = "RahasiaGalasus2026"
+	}
+	dbName := os.Getenv("DB_NAME")
+	if dbName == "" {
+		dbName = "galasusdb"
+	}
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbUser, dbPassword, dbHost, dbPort, dbName)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Gagal konek database: ", err)
