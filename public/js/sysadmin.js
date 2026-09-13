@@ -227,6 +227,7 @@ async function toggleStatus(userId) {
 
 async function editUser(userId) {
     const user = allUsersData.find(u => u.user_id === userId);
+    if (!user) return;
     const newName = await GalasusDialog.prompt("Modifikasi Identitas: Masukkan nama entitas yang direvisi sesuai dengan direktori kepegawaian.", user.full_name);
     
     if (!newName || newName.trim() === user.full_name) return;

@@ -36,11 +36,12 @@ if (!token) {
 }
 
 function pindahinKeDashboard(role) {
-    if (role === 'technician') {
+    const r = (role || '').toLowerCase().trim();
+    if (r === 'technician' || r === 'teknisi') {
         window.location.replace('/views/technician.html');
-    } else if (role === 'finance') {
+    } else if (r === 'finance') {
         window.location.replace('/views/financemng.html');
-    } else if (role === 'super admin' || role === 'super_admin') {
+    } else if (r === 'super admin' || r === 'super_admin' || r === 'admin') {
         window.location.replace('/views/superadmin.html');
     } else {
         logoutPaksa();
@@ -49,21 +50,22 @@ function pindahinKeDashboard(role) {
 
 async function cekHakAksesRuangan(path, role) {
     const currentRole = (role || '').toLowerCase().trim();
+    const isSuperAdmin = currentRole === 'super admin' || currentRole === 'super_admin' || currentRole === 'admin';
     
     if (path.includes('superadmin') || path.includes('systemadmin') || path.includes('sysadmin') || path.includes('clientmanagement')) {
-        if (currentRole !== 'super admin' && currentRole !== 'super_admin') {
+        if (!isSuperAdmin) {
             await GalasusDialog.alert('Akses Ditolak: Area ini dibatasi khusus untuk Administrator Utama.');
             pindahinKeDashboard(currentRole); 
             return;
         }
     } else if (path.includes('financemng')) {
-        if (currentRole !== 'super admin' && currentRole !== 'super_admin' && currentRole !== 'finance') {
+        if (!isSuperAdmin && currentRole !== 'finance') {
             await GalasusDialog.alert('Akses Ditolak: Anda tidak memiliki otoritas untuk mengakses data Keuangan.');
             pindahinKeDashboard(currentRole);
             return;
         }
-    } else if (path.includes('technician') || path.includes('servicedesk')) {
-        if (currentRole !== 'super admin' && currentRole !== 'super_admin' && currentRole !== 'technician') {
+    } else if (path.includes('technician') || path.includes('servicedesk') || path.includes('ticketarchive')) {
+        if (!isSuperAdmin && currentRole !== 'technician' && currentRole !== 'teknisi') {
             await GalasusDialog.alert('Akses Ditolak: Halaman ini khusus diperuntukkan bagi operasional Lapangan.');
             pindahinKeDashboard(currentRole);
             return;
@@ -87,10 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const btnDasbor = document.getElementById('btn-dasbor');
-    const roleSekarang = localStorage.getItem('galasus_role');
+    const roleSekarang = (localStorage.getItem('galasus_role') || '').toLowerCase().trim();
 
     if (btnDasbor) {
-        if (roleSekarang !== 'super admin' && roleSekarang !== 'super_admin') {
+        if (roleSekarang !== 'super admin' && roleSekarang !== 'super_admin' && roleSekarang !== 'admin') {
             btnDasbor.style.display = 'none'; 
         } 
         else {

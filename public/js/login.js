@@ -1,4 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const existingToken = localStorage.getItem('galasus_token');
+    const existingRole = (localStorage.getItem('galasus_role') || '').toLowerCase().trim();
+    if (existingToken && existingRole) {
+        if (existingRole === 'technician' || existingRole === 'teknisi') {
+            window.location.replace('/views/technician.html');
+            return;
+        } else if (existingRole === 'finance') {
+            window.location.replace('/views/financemng.html');
+            return;
+        } else if (existingRole === 'super admin' || existingRole === 'super_admin' || existingRole === 'admin') {
+            window.location.replace('/views/superadmin.html');
+            return;
+        }
+    }
+
     const loginForm = document.getElementById('login-form');
     const alertBox = document.getElementById('alert-box');
     const alertMessage = document.getElementById('alert-message');
@@ -78,11 +93,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // PENGALIHAN OTOMATIS BERDASARKAN PERAN
             const userRole = data.role.toLowerCase(); 
-            if (userRole === 'technician') {
+            if (userRole === 'technician' || userRole === 'teknisi') {
                 window.location.replace('/views/technician.html');
             } else if (userRole === 'finance') {
                 window.location.replace('/views/financemng.html');
-            } else if (userRole === 'super_admin' || userRole === 'super admin') {
+            } else if (userRole === 'super_admin' || userRole === 'super admin' || userRole === 'admin') {
                 window.location.replace('/views/superadmin.html'); 
             } else {
                 window.location.replace('/views/login.html');

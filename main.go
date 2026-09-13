@@ -385,11 +385,18 @@ func main() {
 			return c.JSON(400, map[string]string{"message": "Hanya email dengan domain korporat (@galasus.com, @teknisi, @finance) yang diizinkan!"})
 		}
 
+		var existing User
+		if err := db.Where("email = ?", req.Email).First(&existing).Error; err == nil {
+			return c.JSON(400, map[string]string{"message": "Surel sudah terdaftar dalam sistem!"})
+		}
+
 		hashedBytes, _ := bcrypt.GenerateFromPassword([]byte("Galasus123!"), bcrypt.DefaultCost)
 		req.Password = string(hashedBytes)
 		req.Status = "active"
 		req.IsFirstLogin = true
-		db.Create(&req)
+		if err := db.Create(&req).Error; err != nil {
+			return c.JSON(500, map[string]string{"message": "Gagal mendaftarkan pengguna ke basis data"})
+		}
 
 		// LOG ACTIVITY
 		userToken := c.Get("user").(*jwt.Token)
@@ -684,7 +691,7 @@ func main() {
 			Joins("left join users on users.user_id = tickets.assigned_user_id").
 			Joins("left join clients on clients.client_id = tickets.client_id")
 
-		if role == "teknisi" {
+		if role == "teknisi" || role == "technician" {
 			query = query.Where("tickets.status = 'open' OR tickets.assigned_user_id = ? OR tickets.id IN (SELECT ticket_id FROM ticket_logs WHERE user_id = ?)", userID, userID)
 		}
 
@@ -736,7 +743,7 @@ func main() {
 		logSystemActivity(creatorID, creatorName, creatorRole, "Ticket", "Create Ticket", fmt.Sprintf("Membuat tiket bantuan baru: %s", t.NoTiket))
 
 		var technicians []User
-		db.Where("role IN ?", []string{"technician", "TECHNICIAN", "teknisi"}).Find(&technicians)
+		db.Where("role IN ? AND status = 'active'", []string{"technician", "TECHNICIAN", "teknisi"}).Find(&technicians)
 		for _, tech := range technicians {
 			notif := Notification{
 				UserID:   tech.UserID,
@@ -857,6 +864,9 @@ func main() {
 		if err := db.First(&targetUser, input.TargetUserID).Error; err != nil {
 			return c.JSON(404, map[string]string{"message": "Teknisi penerima tidak ditemukan"})
 		}
+		if targetUser.Status == "suspended" {
+			return c.JSON(400, map[string]string{"message": "Operasi Gagal: Teknisi tujuan sedang dalam penangguhan (suspended)"})
+		}
 
 		var ticket Ticket
 		if err := db.First(&ticket, id).Error; err != nil {
@@ -967,12 +977,12 @@ func main() {
 		if file, err := c.FormFile("foto_before"); err == nil {
 			path := filepath.Join("public/uploads", fmt.Sprintf("%d_b_%s", time.Now().Unix(), file.Filename))
 			saveUploadedFile(file, path)
-			updates["foto_before"] = "/" + path
+			updates["foto_before"] = "/" + filepath.ToSlash(path)
 		}
 		if file, err := c.FormFile("foto_after"); err == nil {
 			path := filepath.Join("public/uploads", fmt.Sprintf("%d_a_%s", time.Now().Unix(), file.Filename))
 			saveUploadedFile(file, path)
-			updates["foto_after"] = "/" + path
+			updates["foto_after"] = "/" + filepath.ToSlash(path)
 		}
 
 		if err := db.Model(&ticket).Updates(updates).Error; err != nil {
@@ -1007,12 +1017,14 @@ func main() {
 		}
 
 		if ticket.FotoBefore != "" {
-			os.Remove(strings.TrimPrefix(ticket.FotoBefore, "/"))
+			os.Remove(filepath.Clean(strings.TrimPrefix(ticket.FotoBefore, "/")))
 		}
 		if ticket.FotoAfter != "" {
-			os.Remove(strings.TrimPrefix(ticket.FotoAfter, "/"))
+			os.Remove(filepath.Clean(strings.TrimPrefix(ticket.FotoAfter, "/")))
 		}
 
+		db.Where("ticket_id = ?", ticket.ID).Delete(&TicketLog{})
+		db.Where("ticket_id = ?", ticket.ID).Delete(&Notification{})
 		db.Delete(&ticket)
 
 		userToken := c.Get("user").(*jwt.Token)

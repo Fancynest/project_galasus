@@ -13,45 +13,6 @@ const notifPopoverHTML = `
 </div>
 `;
 
-function initNotifications() {
-    const bellContainer = document.querySelector('button .material-symbols-outlined:contains("notifications")')?.parentElement;
-    if (!bellContainer) return;
-
-    // Inject popover ke dalam DOM
-    bellContainer.classList.add('relative');
-    bellContainer.insertAdjacentHTML('beforeend', notifPopoverHTML);
-
-    const popover = document.getElementById('notif-dropdown');
-
-    // Toggle popover saat bel diklik
-    bellContainer.addEventListener('click', (e) => {
-        // Prevent event bubbling if clicking inside popover
-        if (e.target.closest('#notif-dropdown')) return;
-
-        if (popover.classList.contains('hidden')) {
-            popover.classList.remove('hidden');
-            // Force reflow
-            void popover.offsetWidth;
-            popover.classList.remove('opacity-0', 'scale-95');
-            popover.classList.add('opacity-100', 'scale-100');
-            fetchNotifications(); // Segarkan saat dibuka
-        } else {
-            closeNotifPopover();
-        }
-    });
-
-    // Tutup jika klik di luar
-    document.addEventListener('click', (e) => {
-        if (!bellContainer.contains(e.target)) {
-            closeNotifPopover();
-        }
-    });
-
-    // Mulai polling
-    fetchNotifications();
-    notificationInterval = setInterval(fetchNotifications, 15000); // Tiap 15 detik
-}
-
 function closeNotifPopover() {
     const popover = document.getElementById('notif-dropdown');
     if (!popover || popover.classList.contains('hidden')) return;
@@ -159,14 +120,6 @@ async function handleNotifClick(notifId, ticketId) {
         } else {
             alert("Notifikasi ditandai sebagai dibaca. Silakan cari tiket tersebut di daftar.");
         }
-    }
-}
-
-// Polyfill untuk selector contains text
-jQueryContainsPolyfill = function() {
-    // Karena kita tidak pakai jQuery, kita cari element manual
-    if (!Element.prototype.matches) {
-        Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
     }
 }
 
